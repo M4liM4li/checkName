@@ -12,7 +12,7 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const API_URL = 'checkname-server.vercel.app';  // แก้ไข URL ให้ตรงกับ Backend ของคุณ
+    const API_URL = 'https://checkname-server.vercel.app/api/login';  // แก้ไข URL ให้ตรงกับ Backend ของคุณ
 
     try {
       const response = await axios.post(API_URL, {
