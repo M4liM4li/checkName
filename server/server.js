@@ -41,7 +41,7 @@ app.post('/api/login', (req, res) => {
     return res.status(400).json({ success: false, message: 'Username and password are required' });
   }
 
-  const query = 'SELECT * FROM tb_user WHERE username = ?';
+  const query = 'SELECT firstname, lastname, queue, password FROM tb_user WHERE username = ?';
   connection.execute(query, [username], (err, results) => {
     if (err) {
       console.error('Error querying database:', err);
@@ -49,10 +49,19 @@ app.post('/api/login', (req, res) => {
     }
 
     if (results.length > 0) {
-      const user = results[0];  
+      const user = results[0];  // ดึงข้อมูลผู้ใช้ที่ค้นพบ
 
       if (user.password === password) {
-        res.status(200).json({ success: true, message: 'Login successful', user: user });
+        // ส่งข้อมูล firstname, lastname, และ is_in_queue ใน response
+        res.status(200).json({
+          success: true,
+          message: 'Login successful',
+          user: {
+            firstname: user.firstname,
+            lastname: user.lastname,
+            isInQueue: user.is_in_queue // แสดงข้อมูลการเข้าแถว
+          }
+        });
       } else {
         res.status(401).json({ success: false, message: 'Invalid username or password' });
       }

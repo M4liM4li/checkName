@@ -1,57 +1,50 @@
-import React, { useState } from 'react';
-import Webcam from 'react-webcam';
+import React, { useState, useEffect } from 'react';
 import './Home.css';
+import axios from 'axios';
 
 const Home = () => {
- const [isScanning, setIsScanning] = useState(false);
+  const [user, setUser] = useState(null);  // เก็บข้อมูลผู้ใช้
+  const [errorMessage, setErrorMessage] = useState('');
 
- const handleScan = () => {
-   setIsScanning(true);
- };
+  useEffect(() => {
+    // เรียก API เมื่อ component ถูกโหลดขึ้น
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/api/getUserData');  // API ที่จะดึงข้อมูล
+        if (response.data.success) {
+          setUser(response.data.user);  // เก็บข้อมูลผู้ใช้ที่ได้รับ
+        } else {
+          setErrorMessage('ไม่สามารถดึงข้อมูลผู้ใช้ได้');
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        setErrorMessage('เกิดข้อผิดพลาดในการดึงข้อมูล');
+      }
+    };
 
- return (
-   <div className="container">
-     <div className="sun"></div>
-     <div className="cloud">
-       <div className="cloud-part"></div>
-       <div className="cloud-part"></div>
-       <div className="cloud-part"></div>
-     </div>
-     <div className="cloud">
-       <div className="cloud-part"></div>
-       <div className="cloud-part"></div>
-       <div className="cloud-part"></div>
-     </div>
-     <div className="cloud">
-       <div className="cloud-part"></div>
-       <div className="cloud-part"></div>
-       <div className="cloud-part"></div>
-     </div>
-     <div className="cloud">
-       <div className="cloud-part"></div>
-       <div className="cloud-part"></div>
-       <div className="cloud-part"></div>
-     </div>
-     <div className="content">
-       <div className="question">
-         {isScanning ? (
-           <Webcam
-             audio={false}
-             screenshotFormat="image/jpeg"
-             videoConstraints={{
-               facingMode: "user"
-             }}
-           />
-         ) : (
-           "?"
-         )}
-       </div>
-       <button className="button" onClick={handleScan}>
-         {isScanning ? "ปิดกล้อง" : "แสกนหน้า"}
-       </button>
-     </div>
-   </div>
- );
+    fetchUserData();
+  }, []);
+
+  return (
+    <div className="container">
+      <div className="content">
+        <div className="question">
+          {/* คุณสามารถใส่คำถามหรือข้อความที่ต้องการ */}
+        </div>
+        <div>
+          {user ? (
+            <>
+              <h3>{user.firstname} {user.lastname}</h3>
+              <h3>{user.queue ? 'true : เข้าแถว' : 'false : ไม่เข้าแถว'}</h3>
+            </>
+          ) : (
+            <p>กำลังโหลดข้อมูล...</p>
+          )}
+          {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Home;
