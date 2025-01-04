@@ -38,7 +38,7 @@ const Home = () => {
               <h3>{user.queue ? 'true : เข้าแถว' : 'false : ไม่เข้าแถว'}</h3>
             </>
           ) : (
-            <p>กำลังโหลดข้อมูล...</p>
+            <p>กำลังโหลดข้อมูล....</p>
           )}
           {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
         </div>
