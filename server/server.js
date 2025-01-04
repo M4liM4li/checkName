@@ -55,8 +55,15 @@ app.post('/api/login', (req, res) => {
       const user = results[0];
 
       if (user.password === password) {
-        // ตอบกลับเฉพาะความสำเร็จ
-        res.status(200).json({ success: true, message: 'Login successful' });
+        res.status(200).json({
+          success: true,
+          message: 'Login successful',
+          user: {
+            firstname: user.firstname,
+            lastname: user.lastname,
+            queue: user.queue === true,
+          },
+        });
       } else {
         res.status(401).json({ success: false, message: 'Invalid username or password' });
       }

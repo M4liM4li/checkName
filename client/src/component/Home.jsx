@@ -1,45 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import './Home.css';
-import axios from 'axios';
+import { useLocation } from 'react-router-dom';  // ใช้ useLocation เพื่อดึงข้อมูลที่ส่งจาก Login
 
-const Home = ({ username }) => {
-  const [user, setUser] = useState(null); // เก็บข้อมูลผู้ใช้
-  const [errorMessage, setErrorMessage] = useState('');
-
-  useEffect(() => {
-    // ดึงข้อมูลผู้ใช้เมื่อ component โหลดครั้งแรก
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.post('https://checkname-server.vercel.app/api/getUserData', { username });
-        if (response.data.success) {
-          setUser(response.data.user);
-          setErrorMessage('');
-        } else {
-          setErrorMessage(response.data.message || 'ไม่พบข้อมูลผู้ใช้');
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-        setErrorMessage('เกิดข้อผิดพลาดในการดึงข้อมูล');
-      }
-    };
-
-    if (username) {
-      fetchUserData();
-    } else {
-      setErrorMessage('กรุณาเข้าสู่ระบบ');
-    }
-  }, [username]);
+const Home = () => {
+  const location = useLocation();
+  const { firstname, lastname } = location.state || {};  // ดึงข้อมูลจาก location.state ที่ส่งมาจาก Login
 
   return (
     <div className="container">
       <div className="content">
-        {user ? (
+        {firstname && lastname ? (
           <>
-            <h3>{user.firstname} {user.lastname}</h3>
-            <h3>{user.queue ? 'true : เข้าแถว' : 'false : ไม่เข้าแถว'}</h3>
+            <h3>Welcome, {firstname} {lastname}</h3>
+            {/* สามารถแสดงข้อมูลอื่น ๆ ได้ที่นี่ */}
           </>
         ) : (
-          <p>{errorMessage || 'กำลังโหลดข้อมูล...'}</p>
+          <p>กรุณาล็อกอินเพื่อดูข้อมูล</p>
         )}
       </div>
     </div>

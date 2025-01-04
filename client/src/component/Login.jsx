@@ -22,8 +22,10 @@ const Login = () => {
 
       if (response.data.success) {
         console.log("Login successful:", response.data);
-        // เมื่อเข้าสู่ระบบสำเร็จ ให้ทำการนำทางไปหน้า Home
-        navigate('/home');  // เปลี่ยนเส้นทางไปหน้า Home
+        const { firstname, lastname } = response.data.user;  // ดึง firstname และ lastname จาก response
+
+        // เมื่อเข้าสู่ระบบสำเร็จ ให้ทำการนำทางไปหน้า Home และส่งข้อมูล firstname และ lastname
+        navigate('/home', { state: { firstname, lastname } });  // ส่งข้อมูลผ่าน state
       } else {
         setErrorMessage(response.data.message);
       }
@@ -35,27 +37,6 @@ const Login = () => {
 
   return (
     <div className="container">
-      <div className="sun"></div>
-      <div className="cloud">
-        <div className="cloud-part"></div>
-        <div className="cloud-part"></div>
-        <div className="cloud-part"></div>
-      </div>
-      <div className="cloud">
-        <div className="cloud-part"></div>
-        <div className="cloud-part"></div>
-        <div className="cloud-part"></div>
-      </div>
-      <div className="cloud">
-        <div className="cloud-part"></div>
-        <div className="cloud-part"></div>
-        <div className="cloud-part"></div>
-      </div>
-      <div className="cloud">
-        <div className="cloud-part"></div>
-        <div className="cloud-part"></div>
-        <div className="cloud-part"></div>
-      </div>
       <div className="content">
         <h2>Login</h2>
         <form onSubmit={handleLogin}>
