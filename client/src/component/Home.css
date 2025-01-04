@@ -1,0 +1,150 @@
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(to bottom, #87CEFA, #1E90FF);
+  font-family: Arial, sans-serif;
+}
+
+
+.sun {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 100px;
+  background-color: #FFD700;
+  border-radius: 50%;
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+}
+
+.cloud {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cloud-part {
+  position: absolute;
+  width: 80px;
+  height: 50px;
+  background-color: #FFFFFF;
+  border-radius: 50%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cloud:nth-child(1) {
+  top: 40px;
+  left: 10%;
+}
+
+.cloud:nth-child(1) .cloud-part:nth-child(1) {
+  top: -20px;
+  left: 20px;
+}
+
+.cloud:nth-child(1) .cloud-part:nth-child(2) {
+  top: 0px;
+  left: 0px;
+}
+
+.cloud:nth-child(1) .cloud-part:nth-child(3) {
+  top: 0px;
+  left: 40px;
+}
+
+.cloud:nth-child(2) {
+  top: 40px;
+  right: 10%;
+}
+
+.cloud:nth-child(2) .cloud-part:nth-child(1) {
+  top: -20px;
+  left: 20px;
+}
+
+.cloud:nth-child(2) .cloud-part:nth-child(2) {
+  top: 0px;
+  left: 0px;
+}
+
+.cloud:nth-child(2) .cloud-part:nth-child(3) {
+  top: 0px;
+  left: 40px;
+}
+
+.cloud:nth-child(3) {
+  top: 80px;
+  left: 30%;
+}
+
+.cloud:nth-child(3) .cloud-part:nth-child(1) {
+  top: -20px;
+  left: 20px;
+}
+
+.cloud:nth-child(3) .cloud-part:nth-child(2) {
+  top: 0px;
+  left: 0px;
+}
+
+.cloud:nth-child(3) .cloud-part:nth-child(3) {
+  top: 0px;
+  left: 40px;
+}
+
+.cloud:nth-child(4) {
+  top: 80px;
+  right: 30%;
+}
+
+.cloud:nth-child(4) .cloud-part:nth-child(1) {
+  top: -20px;
+  left: 20px;
+}
+
+.cloud:nth-child(4) .cloud-part:nth-child(2) {
+  top: 0px;
+  left: 0px;
+}
+
+.cloud:nth-child(4) .cloud-part:nth-child(3) {
+  top: 0px;
+  left: 40px;
+}
+
+.question {
+  width: 200px;
+  height: 200px;
+  background-color: #FFFFFF;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 100px;
+  font-weight: bold;
+  color: #000000;
+  border: 5px solid #000000;
+}
+
+.button {
+  margin-top: 20px;
+  padding: 15px 30px;
+  background-color: #32CD32;
+  color: #FFFFFF;
+  font-size: 20px;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+.button:hover {
+  transform: scale(1.1);
+}
