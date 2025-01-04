@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";  
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import axios from "axios"; 
 
@@ -22,10 +22,12 @@ const Login = () => {
 
       if (response.data.success) {
         console.log("Login successful:", response.data);
-        const { firstname, lastname } = response.data.user;  // ดึง firstname และ lastname จาก response
+        
+        // เก็บข้อมูลผู้ใช้ใน localStorage
+        localStorage.setItem('user', JSON.stringify({ username }));
 
-        // เมื่อเข้าสู่ระบบสำเร็จ ให้ทำการนำทางไปหน้า Home และส่งข้อมูล firstname และ lastname
-        navigate('/home', { state: { firstname, lastname } });  // ส่งข้อมูลผ่าน state
+        // เมื่อเข้าสู่ระบบสำเร็จ ให้ทำการนำทางไปหน้า Home
+        navigate('/home');  // เปลี่ยนเส้นทางไปหน้า Home
       } else {
         setErrorMessage(response.data.message);
       }
@@ -44,11 +46,11 @@ const Login = () => {
             <input
               type="text"
               className="inputf"
-              placeholder="Name"
+              placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
-            <span className="label">Name</span>
+            <span className="label">Username</span>
           </div>
           <div className="input">
             <input

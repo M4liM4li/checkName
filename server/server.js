@@ -74,6 +74,37 @@ app.post('/api/login', (req, res) => {
 });
 
 
+// API สำหรับการดึงข้อมูลผู้ใช้ตาม username
+app.post('/api/getUserData', (req, res) => {
+  const { username } = req.body;
+
+  if (!username) {
+    return res.status(400).json({ success: false, message: 'Username is required' });
+  }
+
+  const query = 'SELECT firstname, lastname, queue FROM tb_user WHERE username = ?';
+  connection.execute(query, [username], (err, results) => {
+    if (err) {
+      console.error('Error querying database:', err);
+      return res.status(500).json({ success: false, message: 'Error querying database' });
+    }
+
+    if (results.length > 0) {
+      const user = results[0];
+      res.status(200).json({
+        success: true,
+        user: {
+          firstname: user.firstname,
+          lastname: user.lastname,
+          queue: user.queue === 1, // สมมติว่า `queue` เป็น 1 = เข้าแถว, 0 = ไม่เข้าแถว
+        },
+      });
+    } else {
+      res.status(404).json({ success: false, message: 'User not found' });
+    }
+  });
+});
+
 // เริ่มเซิร์ฟเวอร์
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
