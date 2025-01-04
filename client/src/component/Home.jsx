@@ -10,7 +10,7 @@ const Home = () => {
     // เรียก API เมื่อ component ถูกโหลดขึ้น
     const fetchUserData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/getUserData');  // API ที่จะดึงข้อมูล
+        const response = await axios.get('https://checkname-server.vercel.app/api/login');  // API ที่จะดึงข้อมูล
         if (response.data.success) {
           setUser(response.data.user);  // เก็บข้อมูลผู้ใช้ที่ได้รับ
         } else {
