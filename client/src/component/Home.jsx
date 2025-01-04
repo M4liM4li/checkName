@@ -10,7 +10,7 @@ const Home = ({ username }) => {
     // ดึงข้อมูลผู้ใช้เมื่อ component โหลดครั้งแรก
     const fetchUserData = async () => {
       try {
-        const response = await axios.post('https://checkname-server.vercel.app/api/login', { username });
+        const response = await axios.post('https://checkname-server.vercel.app/api/getUserData', { username });
         if (response.data.success) {
           setUser(response.data.user);
           setErrorMessage('');
