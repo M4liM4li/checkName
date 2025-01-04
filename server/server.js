@@ -86,7 +86,7 @@ app.post('/api/getUserData', (req, res) => {
   connection.execute(query, [username], (err, results) => {
     if (err) {
       console.error('Error querying database:', err);
-      return res.status(500).json({ success: false, message: 'Error querying database.' });
+      return res.status(500).json({ success: false, message: 'Error querying database..' });
     }
 
     if (results.length > 0) {
