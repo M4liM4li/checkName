@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Login from './Login';  // หน้า Login
-import Home from './Home';  // หน้า Home
+import Login from './component/Login';  // หน้า Login
+import Home from './component/Home';  // หน้า Home
 
 const App = () => {
   return (
