@@ -6,16 +6,20 @@ const mysql = require('mysql2');
 const app = express();
 const port = 3000;
 
+// ใช้ CORS และ Body Parser
 app.use(cors({
-  origin: '*',  // หรือ '*' หากต้องการให้เข้าถึงจากทุกที่
+  origin: '*',
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type'],
 }));
 app.use(bodyParser.json());
 
+// เส้นทางหลัก
 app.get('/', (req, res) => {
-  res.send('Server is running'); // หรือส่ง response อื่นๆ ตามต้องการ
+  res.send('Server is running');
 });
+
+// เชื่อมต่อฐานข้อมูล
 const connection = mysql.createConnection({
   host: 'autorack.proxy.rlwy.net',
   user: 'root',
@@ -32,16 +36,15 @@ connection.connect((err) => {
   console.log('Connected to database!');
 });
 
+// API สำหรับการล็อกอิน
 app.post('/api/login', (req, res) => {
-  console.log('Login request received:', req.body); 
-
-  const { username, password } = req.body;  
+  const { username, password } = req.body;
 
   if (!username || !password) {
     return res.status(400).json({ success: false, message: 'Username and password are required' });
   }
 
-  const query = 'SELECT firstname, lastname, queue, password FROM tb_user WHERE username = ?';
+  const query = 'SELECT password FROM tb_user WHERE username = ?';
   connection.execute(query, [username], (err, results) => {
     if (err) {
       console.error('Error querying database:', err);
@@ -49,19 +52,11 @@ app.post('/api/login', (req, res) => {
     }
 
     if (results.length > 0) {
-      const user = results[0];  // ดึงข้อมูลผู้ใช้ที่ค้นพบ
+      const user = results[0];
 
       if (user.password === password) {
-        // ส่งข้อมูล firstname, lastname, และ is_in_queue ใน response
-        res.status(200).json({
-          success: true,
-          message: 'Login successful',
-          user: {
-            firstname: user.firstname,
-            lastname: user.lastname,
-            isInQueue: user.is_in_queue // แสดงข้อมูลการเข้าแถว
-          }
-        });
+        // ตอบกลับเฉพาะความสำเร็จ
+        res.status(200).json({ success: true, message: 'Login successful' });
       } else {
         res.status(401).json({ success: false, message: 'Invalid username or password' });
       }
@@ -71,7 +66,41 @@ app.post('/api/login', (req, res) => {
   });
 });
 
+
+// API สำหรับการดึงข้อมูลผู้ใช้ตาม username
+app.post('/api/getUserData', (req, res) => {
+  const { username } = req.body;
+
+  if (!username) {
+    return res.status(400).json({ success: false, message: 'Username is required' });
+  }
+
+  const query = 'SELECT firstname, lastname, queue FROM tb_user WHERE username = ?';
+  connection.execute(query, [username], (err, results) => {
+    if (err) {
+      console.error('Error querying database:', err);
+      return res.status(500).json({ success: false, message: 'Error querying database' });
+    }
+
+    if (results.length > 0) {
+      const user = results[0];
+      res.status(200).json({
+        success: true,
+        user: {
+          firstname: user.firstname,
+          lastname: user.lastname,
+          queue: user.queue === 1, // สมมติว่า `queue` เป็น 1 = เข้าแถว, 0 = ไม่เข้าแถว
+        },
+      });
+    } else {
+      res.status(404).json({ success: false, message: 'User not found' });
+    }
+  });
+});
+
+// เริ่มเซิร์ฟเวอร์
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
+
 module.exports = app;
