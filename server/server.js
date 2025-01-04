@@ -96,7 +96,7 @@ app.post('/api/getUserData', (req, res) => {
         user: {
           firstname: user.firstname,
           lastname: user.lastname,
-          queue: user.queue === 1, // สมมติว่า `queue` เป็น 1 = เข้าแถว, 0 = ไม่เข้าแถว
+          queue: user.queue === true,
         },
       });
     } else {
