@@ -62,6 +62,12 @@ const ScanStudent = () => {
                 numberOfCamerasCallback={setNumberOfCameras}
                 facingMode="environment"  {/* ใช้กล้องหลัง */}
                 aspectRatio={1}
+                errorMessages={{
+                  noCameraAccessible: "ไม่สามารถเข้าถึงกล้องได้",
+                  permissionDenied: "กรุณาอนุญาตการใช้งานกล้อง",
+                  switchCamera: "ไม่สามารถสลับกล้องได้",
+                  canvas: "Canvas ไม่สามารถใช้งานได้",
+                }}
               />
             </div>
           ) : image ? (
