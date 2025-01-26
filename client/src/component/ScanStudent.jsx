@@ -60,7 +60,7 @@ const ScanStudent = () => {
               <Camera
                 ref={camera}
                 numberOfCamerasCallback={setNumberOfCameras}
-                facingMode="environment"  {/* ใช้กล้องหลัง */}
+                facingMode="environment"
                 aspectRatio={1}
                 errorMessages={{
                   noCameraAccessible: "ไม่สามารถเข้าถึงกล้องได้",
