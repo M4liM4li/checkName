@@ -21,9 +21,6 @@ app.get("/", (req, res) => {
   res.status(200).json({ message: "Server is running" });
 });
 
-// ใช้ controller แทน
-app.post("/receive-face-data", faceRecognitionController.receiveFaceData);
-
 app.use("/api", authRouter);
 app.use("/api", attendanceRouter);
 
