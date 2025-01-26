@@ -46,7 +46,7 @@ const ScanStudent = () => {
 
   const sendDataToBackend = async (name) => {
     try {
-      const response = await fetch("/api/receiveFaceData", {
+      const response = await fetch("https://check-name-server.vercel.app/api/receiveFaceData", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
