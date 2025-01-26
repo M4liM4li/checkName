@@ -24,19 +24,37 @@ const StudentList = () => {
     fetchStudents();
   }, []);
 
-  const exportToExcel = () => {
+  const exportToExcel = async () => {
+    // สร้างข้อมูลสำหรับ Export
     const data = students.map((student) => ({
-      "รหัสนักเรียน": student.user.stdcode,
-      "ชื่อเต็ม": student.user.fullname,
-      "สถานะ": student.status === "1" ? "" : "เช็คชื่อแล้ว",
-      "เวลาเช็คชื่อ": new Date(student.createdAt).toLocaleTimeString("th-TH"),
+      รหัสนักเรียน: student.user.stdcode,
+      ชื่อเต็ม: student.user.fullname,
+      สถานะ: student.status === "1" ? "" : "เช็คชื่อแล้ว",
+      เวลาเช็คชื่อ: new Date(student.createdAt).toLocaleTimeString("th-TH"),
     }));
 
+    // สร้างไฟล์ Excel
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Students");
-
     XLSX.writeFile(wb, "รายชื่อนักเรียน.xlsx");
+
+    // เรียก API เพื่อลบข้อมูลในตาราง
+    try {
+      const response = await fetch("https://check-name-server.vercel.app/api/delete-names", {
+        method: "DELETE",
+      });
+      const result = await response.json();
+
+      if (response.ok) {
+        alert(result.message || "ลบข้อมูลในตารางสำเร็จ");
+      } else {
+        alert("เกิดข้อผิดพลาด: " + result.error);
+      }
+    } catch (error) {
+      console.error("Error deleting data:", error);
+      alert("ไม่สามารถลบข้อมูลในตารางได้");
+    }
   };
 
   return (

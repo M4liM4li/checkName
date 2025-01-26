@@ -122,3 +122,11 @@ exports.listname = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+exports.deleteName = async (req, res) => {
+  try {
+    const name = await prisma.Attendance.deleteMany();
+    res.json({message:"ลบเสร็จสิ้น"});
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
