@@ -1,52 +1,5 @@
 const prisma = require("../config/prisma");
 
-
-
-// controllers/Attendance.js
-exports.conAttendance = async (req, res) => {
-  try {
-    const { stdcode } = req.body;
-
-    if (!stdcode) {
-      return res.status(400).json({
-        message: "stdcode is required",
-      });
-    }
-
-    // ค้นหาผู้ใช้ในฐานข้อมูล
-    const user = await prisma.user.findFirst({
-      where: { stdcode },
-    });
-
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found",
-      });
-    }
-
-    // ค้นหา attendance ของผู้ใช้
-    const attendance = await prisma.attendance.findFirst({
-      where: {
-        userID: user.id,
-      },
-    });
-
-    // ส่งข้อมูลผู้ใช้และสถานะ attendance กลับไป
-    return res.status(200).json({
-      status: "success",
-      user,  // ส่งข้อมูลผู้ใช้
-      attendance: attendance || null, // ถ้าไม่พบ attendance จะส่ง null
-    });
-  } catch (err) {
-    console.error("Error in conAttendance:", err);
-    return res.status(500).json({
-      status: "error",
-      message: "Server error",
-      error: err.message,
-    });
-  }
-};
-
 exports.attendance = async (req, res) => {
   try {
     const { stdcode } = req.body;

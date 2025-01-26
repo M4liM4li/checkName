@@ -1,7 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { Camera } from "react-camera-pro";
 import style from "../style/Teacher.module.css";
-import Swal from 'sweetalert2';
 
 const ScanStudent = () => {
   const camera = useRef(null);
@@ -14,6 +13,8 @@ const ScanStudent = () => {
       const photo = camera.current.takePhoto();
       setImage(photo);
       setIsUsingCamera(false);
+
+      // ส่งรูปภาพไปยัง server สำหรับประมวลผล
       sendImageToServer(photo);
     }
   };
@@ -21,64 +22,35 @@ const ScanStudent = () => {
   const sendImageToServer = async (photo) => {
     try {
       const formData = new FormData();
+
+      // เปลี่ยนรูปภาพจาก base64 หรือ URL เป็น Blob
       const response = await fetch(photo);
       const blob = await response.blob();
 
+      // ตรวจสอบขนาดของไฟล์ก่อนส่ง
+      console.log("Photo Blob size:", blob.size); // ตรวจสอบขนาดของไฟล์ก่อนส่ง
+
+      // เพิ่มไฟล์ลงใน formData
       formData.append("image", blob, "photo.jpg");
 
+      // ตรวจสอบ content ของ formData
+      console.log("FormData content:", formData.get("image"));
+
+      // ส่งข้อมูลไปยัง server
       const res = await fetch(
         "https://stable-airedale-powerful.ngrok-free.app/compare-face",
         {
           method: "POST",
-          body: formData,
+          body: formData, // ไม่ต้องตั้ง Content-Type ด้วยตัวเอง
         }
       );
 
       const result = await res.json();
-      fetchStudentName(result.name);
+      console.log(result);
     } catch (error) {
       console.error("เกิดข้อผิดพลาดในการส่งรูปภาพ:", error);
     }
   };
-
-  const fetchStudentName = async (name) => {
-    try {
-      const response = await fetch('https://check-name-server.vercel.app/api/receiveFaceData', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name }),
-      });
-
-      const data = await response.json();
-
-      if (data.status === 'success') {
-        Swal.fire({
-          icon: 'success',
-          title: 'บันทึกการเข้าเรียนสำเร็จ',
-          text: `ชื่อ: ${data.name}`,
-          confirmButtonText: 'ตกลง'
-        });
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'เกิดข้อผิดพลาด',
-          text: data.message,
-          confirmButtonText: 'ตกลง'
-        });
-      }
-    } catch (error) {
-      console.error('เกิดข้อผิดพลาดในการดึงข้อมูล:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'เกิดข้อผิดพลาด',
-        text: 'ไม่สามารถติดต่อเซิร์ฟเวอร์ได้',
-        confirmButtonText: 'ตกลง'
-      });
-    }
-  };
-
   return (
     <div className={style.container}>
       <div className={style.content}>
