@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import { Camera } from "react-camera-pro";
-import Swal from "sweetalert2"; // Assuming you've installed SweetAlert2
 import style from "../style/Teacher.module.css";
 
 const ScanStudent = () => {
@@ -8,7 +7,6 @@ const ScanStudent = () => {
   const [numberOfCameras, setNumberOfCameras] = useState(0);
   const [image, setImage] = useState(null);
   const [isUsingCamera, setIsUsingCamera] = useState(false);
-  const [name, setName] = useState(""); // State to hold the student's name
 
   const handleTakePhoto = () => {
     if (camera.current) {
@@ -16,52 +14,8 @@ const ScanStudent = () => {
       setImage(photo);
       setIsUsingCamera(false);
 
-      // Send the photo to the server for processing
+      // ส่งรูปภาพไปยัง server สำหรับประมวลผล
       sendImageToServer(photo);
-    }
-  };
-
-  const handleNameVerification = async () => {
-    if (!name) {
-      return Swal.fire("Error", "Name is required", "error");
-    }
-
-    // Show confirmation alert with the name
-    const result = await Swal.fire({
-      title: `Confirm Name: ${name}`,
-      text: "Is this your name?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      cancelButtonText: "No",
-    });
-
-    if (result.isConfirmed) {
-      // Proceed with the attendance process
-      await sendDataToBackend(name);
-    } else {
-      Swal.fire("Cancelled", "You cancelled the name verification", "info");
-    }
-  };
-
-  const sendDataToBackend = async (name) => {
-    try {
-      const response = await fetch("https://check-name-server.vercel.app/api/receiveFaceData", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name }),
-      });
-
-      const data = await response.json();
-      if (data.status === "success") {
-        Swal.fire("Success", data.message, "success");
-      } else {
-        Swal.fire("Failed", data.message, "error");
-      }
-    } catch (error) {
-      Swal.fire("Error", "An error occurred while sending data", "error");
     }
   };
 
@@ -69,32 +23,34 @@ const ScanStudent = () => {
     try {
       const formData = new FormData();
 
-      // Convert base64 or URL to Blob
+      // เปลี่ยนรูปภาพจาก base64 หรือ URL เป็น Blob
       const response = await fetch(photo);
       const blob = await response.blob();
 
-      // Check the file size before sending
-      console.log("Photo Blob size:", blob.size);
+      // ตรวจสอบขนาดของไฟล์ก่อนส่ง
+      console.log("Photo Blob size:", blob.size); // ตรวจสอบขนาดของไฟล์ก่อนส่ง
 
-      // Add the file to formData
+      // เพิ่มไฟล์ลงใน formData
       formData.append("image", blob, "photo.jpg");
 
-      // Send the form data to the server
+      // ตรวจสอบ content ของ formData
+      console.log("FormData content:", formData.get("image"));
+
+      // ส่งข้อมูลไปยัง server
       const res = await fetch(
         "https://stable-airedale-powerful.ngrok-free.app/compare-face",
         {
           method: "POST",
-          body: formData, // Do not set Content-Type manually
+          body: formData, // ไม่ต้องตั้ง Content-Type ด้วยตัวเอง
         }
       );
 
       const result = await res.json();
       console.log(result);
     } catch (error) {
-      console.error("Error sending photo:", error);
+      console.error("เกิดข้อผิดพลาดในการส่งรูปภาพ:", error);
     }
   };
-
   return (
     <div className={style.container}>
       <div className={style.content}>
@@ -107,15 +63,18 @@ const ScanStudent = () => {
                 facingMode="user"
                 aspectRatio={1}
                 errorMessages={{
-                  noCameraAccessible: "Cannot access the camera",
-                  permissionDenied: "Please allow camera access",
-                  switchCamera: "Unable to switch cameras",
-                  canvas: "Canvas is not supported",
+                  noCameraAccessible: "ไม่สามารถเข้าถึงกล้องได้",
+                  permissionDenied: "กรุณาอนุญาตการใช้งานกล้อง",
+                  switchCamera: "ไม่สามารถสลับกล้องได้",
+                  canvas: "Canvas ไม่สามารถใช้งานได้",
                 }}
               />
             </div>
           ) : image ? (
-            <img src={image} className={style.questionImg} />
+            <img
+              src={image}
+              className={style.questionImg}
+            />
           ) : (
             <img
               className={style.questionImg}
@@ -125,27 +84,18 @@ const ScanStudent = () => {
             />
           )}
         </div>
-
         <div className={style.buttonContainer}>
-          <input
-            type="text"
-            className={style.nameInput}
-            placeholder="Enter student's name"
-            value={name}
-            onChange={(e) => setName(e.target.value)} // Update name state
-          />
-
           {!isUsingCamera ? (
             <button
               className={style.button}
               onClick={() => setIsUsingCamera(true)}
             >
-              Open Camera
+              เปิดกล้อง
             </button>
           ) : (
             <>
               <button className={style.button} onClick={handleTakePhoto}>
-                Take Photo
+                ถ่ายรูป
               </button>
               {numberOfCameras > 1 && (
                 <button
@@ -156,24 +106,17 @@ const ScanStudent = () => {
                     }
                   }}
                 >
-                  Switch Camera
+                  สลับกล้อง
                 </button>
               )}
               <button
                 className={style.button}
                 onClick={() => setIsUsingCamera(false)}
               >
-                Cancel
+                ยกเลิก
               </button>
             </>
           )}
-
-          <button
-            className={style.button}
-            onClick={handleNameVerification} // Trigger name verification flow
-          >
-            Verify Name
-          </button>
         </div>
       </div>
     </div>
