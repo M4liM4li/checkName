@@ -4,6 +4,7 @@ const attendanceController = require("./Attendance");
 exports.receiveFaceData = async (req, res) => {
   try {
     const { name } = req.body;
+
     if (!name) {
       return res.status(400).json({
         status: "error",
