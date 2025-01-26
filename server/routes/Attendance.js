@@ -9,6 +9,6 @@ router.post("/attendance", attendanceController.attendance);
 router.post("/receiveFaceData", receiveFaceData);
 router.get("/listname", listname); 
 router.get("/listUsers", authenticate, listUsers);
-app.delete("/api/delete-names", deleteName);
+router.delete("/delete-names", deleteName);
 
 module.exports = router;
