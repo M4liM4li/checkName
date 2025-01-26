@@ -71,10 +71,7 @@ const ScanStudent = () => {
               />
             </div>
           ) : image ? (
-            <img
-              src={image}
-              className={style.questionImg}
-            />
+            <img src={image} className={style.questionImg} />
           ) : (
             <img
               className={style.questionImg}
@@ -87,14 +84,15 @@ const ScanStudent = () => {
         <div className={style.buttonContainer}>
           {!isUsingCamera ? (
             <button
-              className={style.button}
+              className={style.buttonScan}
               onClick={() => setIsUsingCamera(true)}
             >
               เปิดกล้อง
             </button>
           ) : (
             <>
-              <button className={style.button} onClick={handleTakePhoto}>
+              
+              <button className={style.button} onClick={handleTakePhoto} style={{ backgroundColor: '#48ff00' }}>
                 ถ่ายรูป
               </button>
               {numberOfCameras > 1 && (
@@ -112,6 +110,7 @@ const ScanStudent = () => {
               <button
                 className={style.button}
                 onClick={() => setIsUsingCamera(false)}
+                style={{ backgroundColor: "#ff1e1e" }}
               >
                 ยกเลิก
               </button>

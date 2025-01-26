@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import style from "../style/StudentList.module.css";
 import * as XLSX from "xlsx";
+import Swal from "sweetalert2"; // เพิ่มการนำเข้า SweetAlert2
 
 const StudentList = () => {
   const [students, setStudents] = useState([]);
@@ -40,23 +41,54 @@ const StudentList = () => {
     XLSX.writeFile(wb, "รายชื่อนักเรียน.xlsx");
 
     // เรียก API เพื่อลบข้อมูลในตาราง
-    try {
-      const response = await fetch("https://check-name-server.vercel.app/api/delete-names", {
-        method: "DELETE",
-      });
-      const result = await response.json();
-
-      if (response.ok) {
-        alert(result.message || "ลบข้อมูลในตารางสำเร็จ");
-      } else {
-        alert("เกิดข้อผิดพลาด: " + result.error);
-      }
-    } catch (error) {
-      console.error("Error deleting data:", error);
-      alert("ไม่สามารถลบข้อมูลในตารางได้");
-    }
   };
+  const deleteName = async () => {
+    Swal.fire({
+      title: "ยืนยันการลบ?",
+      text: "คุณต้องการลบรายชื่อทั้งหมดใช่หรือไม่?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่, ลบเลย!",
+      cancelButtonText: "ยกเลิก",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await fetch(
+            "https://check-name-server.vercel.app/api/delete-names",
+            {
+              method: "DELETE",
+            }
+          );
+          const result = await response.json();
 
+          if (response.ok) {
+            Swal.fire({
+              title: "ลบสำเร็จ!",
+              text: result.message || "ลบข้อมูลในตารางสำเร็จ",
+              icon: "success",
+            }).then(() => {
+              window.location.reload(); // Reload the page
+            });
+          } else {
+            Swal.fire({
+              title: "เกิดข้อผิดพลาด",
+              text: "ไม่สามารถลบข้อมูลได้",
+              icon: "error",
+            });
+          }
+        } catch (error) {
+          console.error("Error deleting data:", error);
+          Swal.fire({
+            title: "เกิดข้อผิดพลาด",
+            text: "ไม่สามารถลบข้อมูลในตารางได้",
+            icon: "error",
+          });
+        }
+      }
+    });
+  };
   return (
     <div className={style.container}>
       <div className={style.content}>
@@ -73,9 +105,15 @@ const StudentList = () => {
             </li>
           ))}
         </ul>
-        <button onClick={exportToExcel} className={style.exportButton}>
-          Export
-        </button>
+
+        <div className={style.buttonContainer}>
+          <button onClick={deleteName} className={style.deleteButton}>
+            ลบ
+          </button>
+          <button onClick={exportToExcel} className={style.exportButton}>
+            Export
+          </button>
+        </div>
       </div>
     </div>
   );

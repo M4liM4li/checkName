@@ -1,12 +1,11 @@
 .container {
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    background: linear-gradient(to bottom, #87CEFA, #1E90FF);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+  margin: 0;
+  padding: 0;
+  display: flex;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
   
   .content {
     background: white;
@@ -154,10 +153,18 @@
 
 .button {
   padding: 8px 16px;
-  background-color: #1E90FF;
+  background-color: hsl(71, 100%, 50%);
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   margin-left: 10px;
+}
+.buttonScan {
+  padding: 8px 16px;
+  background-color: #ff1e1e;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
