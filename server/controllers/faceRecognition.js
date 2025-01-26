@@ -1,9 +1,8 @@
-// controllers/faceRecognitionController.js
 const attendanceController = require("./Attendance");
 
 exports.receiveFaceData = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, isConfirmed } = req.body; // Expecting isConfirmed to be sent from the frontend
     if (!name) {
       return res.status(400).json({
         status: "error",
@@ -13,12 +12,20 @@ exports.receiveFaceData = async (req, res) => {
 
     console.log("Received Face Data:", name);
 
-    // เรียกใช้ attendance controller และรับผลลัพธ์
+    // If the confirmation result is not provided or is false, return an error
+    if (!isConfirmed) {
+      return res.status(400).json({
+        status: "error",
+        message: "Name confirmation failed or cancelled.",
+      });
+    }
+
+    // Proceed with the attendance process if the name is confirmed
     const attendanceResult = await attendanceController.attendance({
       body: { stdcode: name },
     });
 
-    // ส่งผลลัพธ์กลับ
+    // Return the result of the attendance process
     return res.status(attendanceResult.status).json({
       status: attendanceResult.status < 400 ? "success" : "error",
       message: attendanceResult.data.message,

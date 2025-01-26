@@ -5,7 +5,7 @@ const { listUsers, listname} = require("../controllers/Attendance");
 const attendanceController = require("../controllers/Attendance");
 const { receiveFaceData } = require("../controllers/faceRecognition");
 
-router.post("/attendance", attendanceController.attendance); 
+router.post("/attendance", attendanceController.conAttendance); 
 router.post("/receiveFaceData", receiveFaceData);
 router.get("/listname", listname); 
 router.get("/listUsers", authenticate, listUsers);

@@ -54,6 +54,36 @@ exports.attendance = async (req, res) => {
     };
   }
 };
+exports.conAttendance = async (req, res) => {
+  try {
+    const { stdcode } = req.body;
+
+    if (!stdcode) {
+      return {
+        status: 400,
+        data: { message: "stdcode is required" },
+      };
+    }
+
+    const user = await prisma.user.findFirst({
+      where: { stdcode },
+    });
+
+    if (!user) {
+      return {
+        status: 404,
+        data: { message: "User not found" },
+      };
+    }
+    res.send(user)
+  } catch (err) {
+    console.error(err);
+    return {
+      status: 500,
+      data: { message: "Server error" },
+    };
+  }
+};
 exports.listUsers = async (req, res) => {
   try {
     const userId = req.user.id;
