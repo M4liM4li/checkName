@@ -24,7 +24,7 @@ const Home = () => {
       }
 
       const response = await fetch(
-        `https://check-namev2-serverx.vercel.app/api/listUsers`,
+        `https://check-name-server.vercel.app/api/listUsers`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -134,10 +134,10 @@ const Home = () => {
                 <li key={record.attendanceId} className={style.record}>
                   <h2
                     className={
-                      record.status === "present" ? style.present : style.absent
+                      record.status === "1" ? style.present : style.absent
                     }
                   >
-                    {record.status === "present" ? "เช็คชื่อแล้ว" : "ยังไม่เช็คชื่อ"}
+                    {record.status === "1" ? "ยังไม่เช็คชื่อ" : "เช็คชื่อแล้ว"}
                   </h2>
                   <h4>{new Date(record.time).toLocaleString("th-TH")}</h4>
                 </li>

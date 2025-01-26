@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import style from "../style/StudentList.module.css";
-import ReactExport from "react-export-excel";
-
-const { ExcelFile, ExcelSheet } = ReactExport;
+import * as XLSX from "xlsx";
 
 const StudentList = () => {
   const [students, setStudents] = useState([]);
@@ -11,7 +9,7 @@ const StudentList = () => {
     const fetchStudents = async () => {
       try {
         const response = await fetch(
-          "https://check-namev2-serverx.vercel.app/api/listname"
+          "https://check-name-server.vercel.app/api/listname"
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -26,6 +24,21 @@ const StudentList = () => {
     fetchStudents();
   }, []);
 
+  const exportToExcel = () => {
+    const data = students.map((student) => ({
+      "รหัสนักเรียน": student.user.stdcode,
+      "ชื่อเต็ม": student.user.fullname,
+      "สถานะ": student.status === "1" ? "" : "เช็คชื่อแล้ว",
+      "เวลาเช็คชื่อ": new Date(student.createdAt).toLocaleTimeString("th-TH"),
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Students");
+
+    XLSX.writeFile(wb, "รายชื่อนักเรียน.xlsx");
+  };
+
   return (
     <div className={style.container}>
       <div className={style.content}>
@@ -36,27 +49,15 @@ const StudentList = () => {
               <span className={style.name}>{student.user.stdcode}</span>
               <span className={style.name}>{student.user.fullname}</span>
               <span className={style.status}>
-                {student.status === "present" ? "" : "เช็คชื่อแล้ว"}{" "}
+                {student.status === "1" ? "" : "เช็คชื่อแล้ว"}{" "}
                 {new Date(student.createdAt).toLocaleTimeString("th-TH")}
               </span>
             </li>
           ))}
         </ul>
-
-        <ExcelFile
-          filename="รายชื่อนักเรียน"
-          element={<button className={style.exportButton}>Export</button>}
-        >
-          <ExcelSheet data={students} name="Students">
-            <ExcelSheet.Column label="รหัสนักเรียน" value={(col) => col.user.stdcode} />
-            <ExcelSheet.Column label="ชื่อเต็ม" value={(col) => col.user.fullname} />
-            <ExcelSheet.Column label="สถานะ" value={(col) => (col.status === "present" ? "เช็คชื่อแล้ว" : "")} />
-            <ExcelSheet.Column
-              label="เวลาเช็คชื่อ"
-              value={(col) => new Date(col.createdAt).toLocaleTimeString("th-TH")}
-            />
-          </ExcelSheet>
-        </ExcelFile>
+        <button onClick={exportToExcel} className={style.exportButton}>
+          Export
+        </button>
       </div>
     </div>
   );

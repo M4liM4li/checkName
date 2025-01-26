@@ -15,7 +15,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await fetch(
-        "https://check-namev2-serverx.vercel.app/api/login",
+        "https://check-name-server.vercel.app/api/login",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
