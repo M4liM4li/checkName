@@ -24,6 +24,7 @@ exports.attendance = async (req, res) => {
       });
     }
 
+    // เช็คว่าเคยบันทึกการเช็คชื่อหรือไม่
     const check = await prisma.attendance.findFirst({
       where: {
         userID: user.id,
@@ -37,7 +38,7 @@ exports.attendance = async (req, res) => {
       });
     }
 
-    // ทำการบันทึกการเช็คชื่อเฉพาะเมื่อผู้ใช้ยืนยัน
+    // บันทึกการเช็คชื่อเฉพาะเมื่อผู้ใช้ยืนยัน
     await prisma.attendance.create({
       data: {
         userID: user.id,
