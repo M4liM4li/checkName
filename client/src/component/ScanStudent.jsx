@@ -50,13 +50,33 @@ const ScanStudent = () => {
 
       // แสดงผลลัพธ์หลังจากการส่งรูปภาพ
       if (result.status === "success") {
-        Swal.fire({
-          icon: "success",
-          title: "สำเร็จ",
-          text: `การเช็คชื่อสำเร็จ!`,
+        // ใช้ SweetAlert เพื่อแสดงปุ่ม "เช็คชื่อ" และ "ยกเลิกการเช็คชื่อ"
+        const { value: action } = await Swal.fire({
+          title: `พบการจับคู่: ${result.name}`,
+          text: `ความมั่นใจ: ${result.confidence}`,
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "เช็คชื่อ",
+          cancelButtonText: "ยกเลิกการเช็คชื่อ",
         });
-        // เพิ่มข้อมูล student ลงใน state
-        setStudents((prevStudents) => [...prevStudents, result.student]);
+
+        if (action) {
+          // ถ้าผู้ใช้เลือก "เช็คชื่อ"
+          Swal.fire({
+            icon: "success",
+            title: "สำเร็จ",
+            text: `การเช็คชื่อสำเร็จ!`,
+          });
+          // เพิ่มข้อมูล student ลงใน state
+          setStudents((prevStudents) => [...prevStudents, result.student]);
+        } else {
+          // ถ้าผู้ใช้เลือก "ยกเลิกการเช็คชื่อ"
+          Swal.fire({
+            icon: "info",
+            title: "การเช็คชื่อถูกยกเลิก",
+            text: `ไม่มีการเพิ่มข้อมูลการเช็คชื่อ`,
+          });
+        }
       } else {
         Swal.fire({
           icon: "error",
