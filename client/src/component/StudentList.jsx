@@ -2,21 +2,19 @@ import React, { useState, useEffect } from "react";
 import style from "../style/StudentList.module.css";
 import * as XLSX from "xlsx";
 import Swal from "sweetalert2"; // เพิ่มการนำเข้า SweetAlert2
+import axios from "axios"; // นำเข้า axios
 
 const StudentList = () => {
   const [students, setStudents] = useState([]);
   const [stdcode, setStdcode] = useState("");
+
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await fetch(
+        const response = await axios.get(
           "https://check-name-server.vercel.app/api/listname"
         );
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setStudents(data);
+        setStudents(response.data);
       } catch (error) {
         console.error("Failed to fetch students:", error);
       }
@@ -42,6 +40,7 @@ const StudentList = () => {
 
     // เรียก API เพื่อลบข้อมูลในตาราง
   };
+
   const deleteName = async () => {
     Swal.fire({
       title: "ยืนยันการลบ?",
@@ -55,18 +54,14 @@ const StudentList = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await fetch(
-            "https://check-name-server.vercel.app/api/delete-names",
-            {
-              method: "DELETE",
-            }
+          const response = await axios.delete(
+            "https://check-name-server.vercel.app/api/delete-names"
           );
-          const result = await response.json();
 
-          if (response.ok) {
+          if (response.status === 200) {
             Swal.fire({
               title: "ลบสำเร็จ!",
-              text: result.message || "ลบข้อมูลในตารางสำเร็จ",
+              text: response.data.message || "ลบข้อมูลในตารางสำเร็จ",
               icon: "success",
             }).then(() => {
               window.location.reload(); // Reload the page
@@ -90,7 +85,6 @@ const StudentList = () => {
     });
   };
 
-  
   return (
     <div className={style.container}>
       <div className={style.content}>
@@ -107,7 +101,7 @@ const StudentList = () => {
             </li>
           ))}
         </ul>
-        
+
         <div className={style.buttonContainer}>
           <button onClick={deleteName} className={style.deleteButton}>
             ลบ

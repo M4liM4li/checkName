@@ -1,12 +1,15 @@
 import React, { useState, useRef } from "react";
 import { Camera } from "react-camera-pro";
+import axios from "axios"; // นำเข้า axios
 import style from "../style/Teacher.module.css";
+import Swal from "sweetalert2"; // เพิ่มการนำเข้า SweetAlert2
 
 const ScanStudent = () => {
   const camera = useRef(null);
   const [numberOfCameras, setNumberOfCameras] = useState(0);
   const [image, setImage] = useState(null);
   const [isUsingCamera, setIsUsingCamera] = useState(false);
+  const [students, setStudents] = useState([]); // ใช้ students state ตามที่ต้องการ
 
   const handleTakePhoto = () => {
     if (camera.current) {
@@ -24,33 +27,53 @@ const ScanStudent = () => {
       const formData = new FormData();
 
       // เปลี่ยนรูปภาพจาก base64 หรือ URL เป็น Blob
-      const response = await fetch(photo);
-      const blob = await response.blob();
+      const response = await axios.get(photo, { responseType: "blob" });
+      const blob = response.data;
 
       // ตรวจสอบขนาดของไฟล์ก่อนส่ง
-      console.log("Photo Blob size:", blob.size); // ตรวจสอบขนาดของไฟล์ก่อนส่ง
+      console.log("Photo Blob size:", blob.size);
 
       // เพิ่มไฟล์ลงใน formData
       formData.append("image", blob, "photo.jpg");
 
-      // ตรวจสอบ content ของ formData
-      console.log("FormData content:", formData.get("image"));
-
-      // ส่งข้อมูลไปยัง server
-      const res = await fetch(
+      // ส่งข้อมูลไปยัง server โดยใช้ axios
+      const res = await axios.post(
         "https://stable-airedale-powerful.ngrok-free.app/compare-face",
+        formData,
         {
-          method: "POST",
-          body: formData, // ไม่ต้องตั้ง Content-Type ด้วยตัวเอง
+          headers: { "Content-Type": "multipart/form-data" },
         }
       );
 
-      const result = await res.json();
+      const result = res.data;
       console.log(result);
+
+      // แสดงผลลัพธ์หลังจากการส่งรูปภาพ
+      if (result.success) {
+        Swal.fire({
+          icon: "success",
+          title: "สำเร็จ",
+          text: `การเช็คชื่อสำเร็จ!`,
+        });
+        // เพิ่มข้อมูล student ลงใน state
+        setStudents((prevStudents) => [...prevStudents, result.student]);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "ไม่สำเร็จ",
+          text: result.message || "เกิดข้อผิดพลาด",
+        });
+      }
     } catch (error) {
       console.error("เกิดข้อผิดพลาดในการส่งรูปภาพ:", error);
+      Swal.fire({
+        icon: "error",
+        title: "ไม่สามารถส่งรูปภาพได้",
+        text: "เกิดข้อผิดพลาดในการเชื่อมต่อ",
+      });
     }
   };
+
   return (
     <div className={style.container}>
       <div className={style.content}>
@@ -91,8 +114,11 @@ const ScanStudent = () => {
             </button>
           ) : (
             <>
-              
-              <button className={style.button} onClick={handleTakePhoto} style={{ backgroundColor: '#48ff00' }}>
+              <button
+                className={style.button}
+                onClick={handleTakePhoto}
+                style={{ backgroundColor: "#48ff00" }}
+              >
                 ถ่ายรูป
               </button>
               {numberOfCameras > 1 && (

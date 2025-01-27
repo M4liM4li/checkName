@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2"; // เพิ่มการนำเข้า SweetAlert2
+import axios from "axios"; // นำเข้า axios
 import style from "../style/Login.module.css";
 
 const Login = () => {
@@ -14,21 +15,13 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(
+      const response = await axios.post(
         "https://check-name-server.vercel.app/api/login",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password }),
-        }
+        { username, password },
+        { headers: { "Content-Type": "application/json" } }
       );
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.message || "เกิดข้อผิดพลาดในการเชื่อมต่อ");
-        return;
-      }
+      const data = response.data;
 
       if (data.success) {
         sessionStorage.setItem("user", JSON.stringify(data.user));
@@ -41,6 +34,7 @@ const Login = () => {
           text: `ยินดีต้อนรับ`,
           timer: 1200,
         });
+
         // หลังจากผู้ใช้กด "ตกลง" จะนำไปยังหน้าอื่น
         if (data.user.role === "teacher") {
           navigate("/Teacher");

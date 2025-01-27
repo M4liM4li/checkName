@@ -2,10 +2,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import style from "../style/Home.module.css";
 import Swal from "sweetalert2";
+import axios from "axios";
+
 const Home = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [attendanceRecords, setAttendanceRecords] = useState([]);
-  const [isLoading , setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const previousLength = useRef(0);
@@ -23,8 +25,8 @@ const Home = () => {
         return;
       }
 
-      const response = await fetch(
-        `https://check-name-server.vercel.app/api/listUsers`,
+      const response = await axios.get(
+        "https://check-name-server.vercel.app/api/listUsers",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -32,10 +34,7 @@ const Home = () => {
         }
       );
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
+      const data = response.data;
       if (data.success) {
         if (data.user) {
           setUserInfo(data.user);
@@ -84,21 +83,18 @@ const Home = () => {
     <>
       <div className={style.question}>
         <img
-          src={`${cloudinaryUrl}/profile/${userInfo?.image}`} 
+          src={`${cloudinaryUrl}/profile/${userInfo?.image}`}
           alt={userInfo?.fullname || "Profile"}
           onError={(e) => {
             e.target.src = "/assets/default-profile.png";
           }}
         />
       </div>
-      <h2>
-        {userInfo?.fullname}
-      </h2>
-      <h3>
-        แผนกเทคโนโลยีสารสนเทศ
-      </h3>
+      <h2>{userInfo?.fullname}</h2>
+      <h3>แผนกเทคโนโลยีสารสนเทศ</h3>
     </>
   );
+
   return (
     <div className={style.container}>
       <div className={style.sun}></div>
