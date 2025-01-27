@@ -63,7 +63,7 @@ const ScanStudent = () => {
           // ถ้าผู้ใช้เลือก "เช็คชื่อ"
           const attendanceRes = await axios.post(
             "https://check-name-server.vercel.app/api/attendance",
-            { name: result.name } // ส่งชื่อไปยัง API หลังจากยืนยัน
+            { name: result.name, confirm: true } // ส่งชื่อและการยืนยันไปยัง API
           );
           const attendanceResult = attendanceRes.data;
   
@@ -106,6 +106,7 @@ const ScanStudent = () => {
       });
     }
   };
+  
   
   return (
     <div className={style.container}>

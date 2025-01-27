@@ -2,16 +2,17 @@ const prisma = require("../config/prisma");
 
 exports.attendance = async (req, res) => {
   try {
-    const { name: stdcode } = req.body;
+    const { name: stdcode, confirm } = req.body;
 
-    if (!stdcode) {
+    if (!stdcode || confirm === undefined) {
       return res.status(400).json({
         status: "error",
-        message: "Missing stdcode",
+        message: "Missing stdcode or confirmation",
       });
     }
 
     console.log("Received Face Data:", stdcode);
+    console.log("Confirmation received:", confirm);
 
     const user = await prisma.user.findFirst({
       where: { stdcode },
@@ -35,6 +36,13 @@ exports.attendance = async (req, res) => {
       return res.status(400).json({
         status: "error",
         message: "Attendance already exists",
+      });
+    }
+
+    if (!confirm) {
+      return res.status(400).json({
+        status: "error",
+        message: "User did not confirm attendance",
       });
     }
 
