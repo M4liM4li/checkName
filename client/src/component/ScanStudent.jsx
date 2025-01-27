@@ -49,7 +49,7 @@ const ScanStudent = () => {
       console.log(result);
 
       // แสดงผลลัพธ์หลังจากการส่งรูปภาพ
-      if (result.success) {
+      if (result.status === "success") {
         Swal.fire({
           icon: "success",
           title: "สำเร็จ",
@@ -69,7 +69,7 @@ const ScanStudent = () => {
       Swal.fire({
         icon: "error",
         title: "ไม่สามารถส่งรูปภาพได้",
-        text: "เกิดข้อผิดพลาดในการเชื่อมต่อ",
+        text: error.response?.data?.message || "เกิดข้อผิดพลาดในการเชื่อมต่อ",
       });
     }
   };
