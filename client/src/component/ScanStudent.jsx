@@ -54,7 +54,7 @@ const ScanStudent = () => {
       console.error("เกิดข้อผิดพลาดในการส่งรูปภาพ:", error);
     }
   };
-  
+
   const handleGetAttendance = async (stdcode) => {
     try {
       const response = await fetch(
@@ -67,9 +67,10 @@ const ScanStudent = () => {
           body: JSON.stringify({ name: stdcode }),
         }
       );
-  
+
       const data = await response.json();
-  
+      console.log(data); // เพิ่มการ log เพื่อตรวจสอบข้อมูลที่ได้รับ
+
       if (data.status === "success" && data.user) {
         // แสดง SweetAlert ทันทีเมื่อได้รับข้อมูล
         const result = await Swal.fire({
@@ -77,16 +78,18 @@ const ScanStudent = () => {
           html: `
             <div class="text-left">
               <p class="mb-2">ชื่อ: <strong>${data.user.name}</strong></p>
-              <p class="mb-2">รหัสนักเรียน: <strong>${data.user.stdcode}</strong></p>
+              <p class="mb-2">รหัสนักเรียน: <strong>${
+                data.user.stdcode
+              }</strong></p>
               <p>สถานะ: <strong class="${
-                data.attendanceStatus === "registered" 
-                  ? "text-green-500" 
+                data.attendanceStatus === "registered"
+                  ? "text-green-500"
                   : "text-yellow-500"
               }">${
-                data.attendanceStatus === "registered"
-                  ? "เช็คชื่อแล้ว"
-                  : "ยังไม่ได้เช็คชื่อ"
-              }</strong></p>
+            data.attendanceStatus === "registered"
+              ? "เช็คชื่อแล้ว"
+              : "ยังไม่ได้เช็คชื่อ"
+          }</strong></p>
             </div>
           `,
           icon: "info",
@@ -95,9 +98,9 @@ const ScanStudent = () => {
           cancelButtonText: "ยกเลิก",
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
-          reverseButtons: true
+          reverseButtons: true,
         });
-  
+
         if (result.isConfirmed) {
           // ถ้ากดยืนยัน ให้ส่ง request ไปบันทึกการเช็คชื่อ
           const confirmResponse = await fetch(
@@ -110,16 +113,17 @@ const ScanStudent = () => {
               body: JSON.stringify({ name: stdcode, confirm: true }),
             }
           );
-  
+
           const confirmData = await confirmResponse.json();
-  
+          console.log(confirmData); // เพิ่มการ log เพื่อตรวจสอบข้อมูลที่ได้รับ
+
           if (confirmData.status === "success") {
             await Swal.fire({
               title: "สำเร็จ",
               text: "บันทึกการเช็คชื่อเรียบร้อยแล้ว",
               icon: "success",
               timer: 1500,
-              showConfirmButton: false
+              showConfirmButton: false,
             });
           } else {
             throw new Error(confirmData.message);
@@ -133,7 +137,7 @@ const ScanStudent = () => {
       await Swal.fire({
         title: "ผิดพลาด",
         text: error.message || "เกิดข้อผิดพลาดในการเช็คชื่อ",
-        icon: "error"
+        icon: "error",
       });
     }
   };
