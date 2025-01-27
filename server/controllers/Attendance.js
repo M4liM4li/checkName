@@ -1,5 +1,3 @@
-const prisma = require("../config/prisma");
-
 exports.attendance = async (req, res) => {
   try {
     const { name: stdcode } = req.body;
@@ -37,6 +35,7 @@ exports.attendance = async (req, res) => {
       });
     }
 
+    // ทำการบันทึกการเช็คชื่อเฉพาะเมื่อผู้ใช้ยืนยัน
     await prisma.attendance.create({
       data: {
         userID: user.id,

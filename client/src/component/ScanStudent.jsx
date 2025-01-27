@@ -62,13 +62,27 @@ const ScanStudent = () => {
 
         if (action) {
           // ถ้าผู้ใช้เลือก "เช็คชื่อ"
-          Swal.fire({
-            icon: "success",
-            title: "สำเร็จ",
-            text: `การเช็คชื่อสำเร็จ!`,
-          });
-          // เพิ่มข้อมูล student ลงใน state
-          setStudents((prevStudents) => [...prevStudents, result.student]);
+          const attendanceRes = await axios.post(
+            "https://stable-airedale-powerful.ngrok-free.app/api/attendance",
+            { name: result.name } // ส่งชื่อไปยัง API หลังจากยืนยัน
+          );
+          const attendanceResult = attendanceRes.data;
+
+          if (attendanceResult.status === "success") {
+            Swal.fire({
+              icon: "success",
+              title: "สำเร็จ",
+              text: `การเช็คชื่อสำเร็จ!`,
+            });
+            // เพิ่มข้อมูล student ลงใน state
+            setStudents((prevStudents) => [...prevStudents, result.student]);
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "ไม่สำเร็จ",
+              text: attendanceResult.message || "เกิดข้อผิดพลาดในการเช็คชื่อ",
+            });
+          }
         } else {
           // ถ้าผู้ใช้เลือก "ยกเลิกการเช็คชื่อ"
           Swal.fire({
