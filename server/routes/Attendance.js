@@ -6,7 +6,7 @@ const { attendance } = require("../controllers/Attendance");
 
 router.post("/attendance", attendance);
 router.get("/listname", listname);
-router.get("/listUsers", listUsers);
+router.get("/listUsers",authenticate, listUsers);
 router.delete("/delete-names", deleteName);
 
 module.exports = router;
