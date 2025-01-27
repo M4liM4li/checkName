@@ -1,4 +1,5 @@
-const prisma = require('../prisma');
+const prisma = require("../config/prisma");
+
 exports.attendance = async (req, res) => {
   try {
     const { name: stdcode } = req.body;
