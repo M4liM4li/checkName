@@ -1,36 +1,65 @@
-// controllers/faceRecognitionController.js
-const attendanceController = require("./Attendance");
+const prisma = require("../config/prisma");
+
 
 exports.receiveFaceData = async (req, res) => {
   try {
-    const { name } = req.body;
-    if (!name) {
+    const { name: stdcode } = req.body;
+
+    if (!stdcode) {
       return res.status(400).json({
         status: "error",
-        message: "Missing name",
+        message: "Missing stdcode",
       });
     }
 
-    console.log("Received Face Data:", name);
+    console.log("Received Face Data:", stdcode);
 
-    // เรียกใช้ attendance controller และรับผลลัพธ์
-    const attendanceResult = await attendanceController.attendance({
-      body: { stdcode: name },
+    // ค้นหาผู้ใช้ในฐานข้อมูล
+    const user = await prisma.user.findFirst({
+      where: { stdcode },
     });
 
-    // ส่งผลลัพธ์กลับ
-    return res.status(attendanceResult.status).json({
-      status: attendanceResult.status < 400 ? "success" : "error",
-      message: attendanceResult.data.message,
-      name,
-      attendanceStatus:
-        attendanceResult.status === 201 ? "registered" : "failed",
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+
+    // ตรวจสอบว่ามีการบันทึกการเข้าเรียนแล้วหรือยัง
+    const check = await prisma.attendance.findFirst({
+      where: {
+        userID: user.id,
+      },
+    });
+
+    if (check) {
+      return res.status(400).json({
+        status: "error",
+        message: "Attendance already exists",
+      });
+    }
+
+    // บันทึกการเข้าเรียนใหม่
+    await prisma.attendance.create({
+      data: {
+        userID: user.id,
+        status: true,
+      },
+    });
+
+    // ส่งผลลัพธ์สำเร็จกลับไป
+    return res.status(201).json({
+      status: "success",
+      message: "Attendance registered successfully",
+      name: stdcode,
+      attendanceStatus: "registered",
     });
   } catch (err) {
     console.error("Error in receive-face-data:", err);
     return res.status(500).json({
       status: "error",
-      message: "Error processing data",
+      message: "Server error",
       error: err.message,
     });
   }

@@ -1,59 +1,6 @@
 const prisma = require("../config/prisma");
 
-exports.attendance = async (req, res) => {
-  try {
-    const { stdcode } = req.body;
 
-    if (!stdcode) {
-      return {
-        status: 400,
-        data: { message: "stdcode is required" },
-      };
-    }
-
-    const user = await prisma.user.findFirst({
-      where: { stdcode },
-    });
-
-    if (!user) {
-      return {
-        status: 404,
-        data: { message: "User not found" },
-      };
-    }
-
-    const check = await prisma.attendance.findFirst({
-      where: {
-        userID: user.id,
-      },
-    });
-
-    if (check) {
-      return {
-        status: 400,
-        data: { message: "Attendance already exists" },
-      };
-    }
-
-    await prisma.attendance.create({
-      data: {
-        userID: user.id,
-        status: true,
-      },
-    });
-
-    return {
-      status: 201,
-      data: { message: "Attendance registered successfully" },
-    };
-  } catch (err) {
-    console.error(err);
-    return {
-      status: 500,
-      data: { message: "Server error" },
-    };
-  }
-};
 exports.listUsers = async (req, res) => {
   try {
     const userId = req.user.id;
