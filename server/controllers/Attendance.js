@@ -2,7 +2,7 @@ const prisma = require("../config/prisma");
 
 exports.attendance = async (req, res) => {
   try {
-    const { name: stdcode } = req.body;
+    const { name: stdcode, confirm } = req.body; // เพิ่ม `confirm` เพื่อรับการยืนยัน
 
     if (!stdcode) {
       return res.status(400).json({
@@ -39,7 +39,16 @@ exports.attendance = async (req, res) => {
       });
     }
 
-    // บันทึกการเข้าเรียนใหม่
+    // ถ้ายังไม่มีการยืนยัน ให้ส่งข้อมูลผู้ใช้ไปให้ client
+    if (!confirm) {
+      return res.status(200).json({
+        status: "success",
+        message: "User found. Confirm to register attendance.",
+        user,
+      });
+    }
+
+    // บันทึกการเข้าเรียนใหม่ (เมื่อ client ส่ง confirm: true)
     await prisma.attendance.create({
       data: {
         userID: user.id,
@@ -55,7 +64,7 @@ exports.attendance = async (req, res) => {
       attendanceStatus: "registered",
     });
   } catch (err) {
-    console.error("Error in receive-face-data:", err);
+    console.error("Error in attendance:", err);
     return res.status(500).json({
       status: "error",
       message: "Server error",
