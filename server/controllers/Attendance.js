@@ -2,7 +2,7 @@ const prisma = require("../config/prisma");
 
 exports.attendance = async (req, res) => {
   try {
-    const { name: stdcode, confirm } = req.body;
+    const { name: stdcode } = req.body;
 
     if (!stdcode) {
       return res.status(400).json({
@@ -34,14 +34,6 @@ exports.attendance = async (req, res) => {
       return res.status(400).json({
         status: "error",
         message: "Attendance already exists",
-      });
-    }
-
-    if (!confirm) {
-      return res.status(200).json({
-        status: "success",
-        message: "User found. Confirm to register attendance.",
-        user,
       });
     }
 
