@@ -1,8 +1,6 @@
-const prisma = require("../config/prisma");
-
 exports.attendance = async (req, res) => {
   try {
-    const { name: stdcode, confirm } = req.body; // เพิ่ม `confirm` เพื่อรับการยืนยัน
+    const { name: stdcode, confirm } = req.body;
 
     if (!stdcode) {
       return res.status(400).json({
@@ -13,7 +11,6 @@ exports.attendance = async (req, res) => {
 
     console.log("Received Face Data:", stdcode);
 
-    // ค้นหาผู้ใช้ในฐานข้อมูล
     const user = await prisma.user.findFirst({
       where: { stdcode },
     });
@@ -25,7 +22,6 @@ exports.attendance = async (req, res) => {
       });
     }
 
-    // ตรวจสอบว่ามีการบันทึกการเข้าเรียนแล้วหรือยัง
     const check = await prisma.attendance.findFirst({
       where: {
         userID: user.id,
@@ -39,7 +35,6 @@ exports.attendance = async (req, res) => {
       });
     }
 
-    // ถ้ายังไม่มีการยืนยัน ให้ส่งข้อมูลผู้ใช้ไปให้ client
     if (!confirm) {
       return res.status(200).json({
         status: "success",
@@ -48,7 +43,6 @@ exports.attendance = async (req, res) => {
       });
     }
 
-    // บันทึกการเข้าเรียนใหม่ (เมื่อ client ส่ง confirm: true)
     await prisma.attendance.create({
       data: {
         userID: user.id,
@@ -56,7 +50,6 @@ exports.attendance = async (req, res) => {
       },
     });
 
-    // ส่งผลลัพธ์สำเร็จกลับไป
     return res.status(201).json({
       status: "success",
       message: "Attendance registered successfully",

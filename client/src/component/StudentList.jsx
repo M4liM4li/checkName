@@ -90,65 +90,7 @@ const StudentList = () => {
     });
   };
 
-  const handleAttendance = async () => {
-    try {
-      // ส่งคำขอไปยัง backend พร้อม stdcode
-      const response = await fetch("https://check-name-server.vercel.app/api/attendance", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name: stdcode }),
-      });
   
-      const data = await response.json();
-  
-      if (data.status === "success" && data.user) {
-        // แสดงข้อมูลของนักเรียนทันทีที่ข้อมูลถูกส่งกลับ
-        Swal.fire({
-          title: "ข้อมูลนักเรียน",
-          html: `<p>ชื่อ: <strong>${data.user.name}</strong></p>
-                 <p>รหัสนักเรียน: <strong>${data.user.stdcode}</strong></p>
-                 <p>สถานะ: ${
-                   data.attendanceStatus === "registered"
-                     ? "เช็คชื่อแล้ว"
-                     : "ยังไม่ได้เช็คชื่อ"
-                 }</p>`,
-          icon: "info",
-          showCancelButton: true,
-          confirmButtonText: "ยืนยันเช็คชื่อ",
-          cancelButtonText: "ยกเลิก",
-        }).then(async (result) => {
-          if (result.isConfirmed) {
-            // หากผู้ใช้ยืนยัน จะบันทึกข้อมูลการเช็คชื่อ
-            const confirmResponse = await fetch(
-              "https://check-name-server.vercel.app/api/attendance",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ name: stdcode, confirm: true }),
-              }
-            );
-            const confirmData = await confirmResponse.json();
-  
-            if (confirmData.status === "success") {
-              Swal.fire("สำเร็จ", "เช็คชื่อสำเร็จ!", "success");
-            } else {
-              Swal.fire("ผิดพลาด", confirmData.message, "error");
-            }
-          }
-        });
-      } else {
-        Swal.fire("ผิดพลาด", data.message, "error");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาดในการเช็คชื่อ", "error");
-    }
-  };
-
   return (
     <div className={style.container}>
       <div className={style.content}>
@@ -165,13 +107,7 @@ const StudentList = () => {
             </li>
           ))}
         </ul>
-        <input
-          type="text"
-          placeholder="ป้อนรหัสนักเรียน"
-          value={stdcode}
-          onChange={(e) => setStdcode(e.target.value)}
-          onBlur={handleAttendance} // เรียกฟังก์ชันเมื่อ Input เสร็จสิ้น
-        />
+        
         <div className={style.buttonContainer}>
           <button onClick={deleteName} className={style.deleteButton}>
             ลบ

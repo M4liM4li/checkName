@@ -1,12 +1,15 @@
 import React, { useState, useRef } from "react";
 import { Camera } from "react-camera-pro";
 import style from "../style/Teacher.module.css";
+import Swal from "sweetalert2"; // เพิ่มการนำเข้า SweetAlert2
 
 const ScanStudent = () => {
   const camera = useRef(null);
   const [numberOfCameras, setNumberOfCameras] = useState(0);
   const [image, setImage] = useState(null);
   const [isUsingCamera, setIsUsingCamera] = useState(false);
+  const [students, setStudents] = useState([]);
+  const [stdcode, setStdcode] = useState("");
 
   const handleTakePhoto = () => {
     if (camera.current) {
@@ -51,6 +54,90 @@ const ScanStudent = () => {
       console.error("เกิดข้อผิดพลาดในการส่งรูปภาพ:", error);
     }
   };
+  
+  const handleGetAttendance = async (stdcode) => {
+    try {
+      const response = await fetch(
+        "https://check-name-server.vercel.app/api/attendance",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name: stdcode }),
+        }
+      );
+  
+      const data = await response.json();
+  
+      if (data.status === "success" && data.user) {
+        // แสดง SweetAlert ทันทีเมื่อได้รับข้อมูล
+        const result = await Swal.fire({
+          title: "ข้อมูลนักเรียน",
+          html: `
+            <div class="text-left">
+              <p class="mb-2">ชื่อ: <strong>${data.user.name}</strong></p>
+              <p class="mb-2">รหัสนักเรียน: <strong>${data.user.stdcode}</strong></p>
+              <p>สถานะ: <strong class="${
+                data.attendanceStatus === "registered" 
+                  ? "text-green-500" 
+                  : "text-yellow-500"
+              }">${
+                data.attendanceStatus === "registered"
+                  ? "เช็คชื่อแล้ว"
+                  : "ยังไม่ได้เช็คชื่อ"
+              }</strong></p>
+            </div>
+          `,
+          icon: "info",
+          showCancelButton: true,
+          confirmButtonText: "ยืนยันเช็คชื่อ",
+          cancelButtonText: "ยกเลิก",
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          reverseButtons: true
+        });
+  
+        if (result.isConfirmed) {
+          // ถ้ากดยืนยัน ให้ส่ง request ไปบันทึกการเช็คชื่อ
+          const confirmResponse = await fetch(
+            "https://check-name-server.vercel.app/api/attendance",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ name: stdcode, confirm: true }),
+            }
+          );
+  
+          const confirmData = await confirmResponse.json();
+  
+          if (confirmData.status === "success") {
+            await Swal.fire({
+              title: "สำเร็จ",
+              text: "บันทึกการเช็คชื่อเรียบร้อยแล้ว",
+              icon: "success",
+              timer: 1500,
+              showConfirmButton: false
+            });
+          } else {
+            throw new Error(confirmData.message);
+          }
+        }
+      } else {
+        throw new Error(data.message || "ไม่พบข้อมูลนักเรียน");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      await Swal.fire({
+        title: "ผิดพลาด",
+        text: error.message || "เกิดข้อผิดพลาดในการเช็คชื่อ",
+        icon: "error"
+      });
+    }
+  };
+
   return (
     <div className={style.container}>
       <div className={style.content}>
@@ -91,8 +178,11 @@ const ScanStudent = () => {
             </button>
           ) : (
             <>
-              
-              <button className={style.button} onClick={handleTakePhoto} style={{ backgroundColor: '#48ff00' }}>
+              <button
+                className={style.button}
+                onClick={handleTakePhoto}
+                style={{ backgroundColor: "#48ff00" }}
+              >
                 ถ่ายรูป
               </button>
               {numberOfCameras > 1 && (
