@@ -63,7 +63,7 @@ const ScanStudent = () => {
         if (action) {
           // ถ้าผู้ใช้เลือก "เช็คชื่อ"
           const attendanceRes = await axios.post(
-            "https://stable-airedale-powerful.ngrok-free.app/api/attendance",
+            "https://check-name-server.vercel.app/api/attendance",
             { name: result.name } // ส่งชื่อไปยัง API หลังจากยืนยัน
           );
           const attendanceResult = attendanceRes.data;
