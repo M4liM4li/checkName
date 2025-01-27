@@ -4,7 +4,6 @@ const morgan = require("morgan");
 const cors = require("cors");
 const authRouter = require("./routes/auth");
 const attendanceRouter = require("./routes/Attendance");
-const faceRecognitionController = require("./controllers/faceRecognition");
 
 // middleware
 app.use(morgan("dev"));

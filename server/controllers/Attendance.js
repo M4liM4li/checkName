@@ -1,79 +1,65 @@
 const prisma = require("../config/prisma");
 
-
-exports.listUsers = async (req, res) => {
+exports.attendance = async (req, res) => {
   try {
-    const userId = req.user.id;
-    if (!userId) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized: User not logged in" });
+    const { name: stdcode } = req.body;
+
+    if (!stdcode) {
+      return res.status(400).json({
+        status: "error",
+        message: "Missing stdcode",
+      });
     }
 
-    // ดึงข้อมูลผู้ใช้
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        stdcode: true,
-        fullname: true,
-        image: true,
-      },
+    console.log("Received Face Data:", stdcode);
+
+    // ค้นหาผู้ใช้ในฐานข้อมูล
+    const user = await prisma.user.findFirst({
+      where: { stdcode },
     });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
     }
 
-    // ดึงข้อมูลการเช็คชื่อ
-    const attendance = await prisma.attendance.findMany({
-      where: { userID: userId },
-      select: {
-        id: true,
-        status: true,
-        createdAt: true,
+    // ตรวจสอบว่ามีการบันทึกการเข้าเรียนแล้วหรือยัง
+    const check = await prisma.attendance.findFirst({
+      where: {
+        userID: user.id,
       },
-      orderBy: { createdAt: "desc" },
-      take: 10,
     });
 
-    res.json({
-      success: true,
-      user: user,
-      attendanceRecords: attendance.map((record) => ({
-        attendanceId: record.id,
-        status: record.status ? "present" : "absent",
-        time: record.createdAt.toISOString(),
-      })),
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server Error" });
-  }
-};
-exports.listname = async (req, res) => {
-  try {
-    const name = await prisma.Attendance.findMany({
-      include: {
-        user: {
-          select: {
-            id: true,
-            stdcode: true,
-            fullname: true,
-          },
-        },
+    if (check) {
+      return res.status(400).json({
+        status: "error",
+        message: "Attendance already exists",
+      });
+    }
+
+    // บันทึกการเข้าเรียนใหม่
+    await prisma.attendance.create({
+      data: {
+        userID: user.id,
+        status: true,
       },
     });
-    res.send(name);
+
+    // ส่งผลลัพธ์สำเร็จกลับไป
+    return res.status(201).json({
+      status: "success",
+      message: "Attendance registered successfully",
+      name: stdcode,
+      attendanceStatus: "registered",
+    });
   } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-exports.deleteName = async (req, res) => {
-  try {
-    const name = await prisma.Attendance.deleteMany();
-    res.json({message:"ลบเสร็จสิ้น"});
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Error in receive-face-data:", err);
+    return res.status(500).json({
+      status: "error",
+      message: "Server error",
+      error: err.message,
+    });
   }
 };
