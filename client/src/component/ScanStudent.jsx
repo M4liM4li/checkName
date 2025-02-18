@@ -25,17 +25,17 @@ const ScanStudent = () => {
   const sendImageToServer = async (photo) => {
     try {
       const formData = new FormData();
-  
+
       // เปลี่ยนรูปภาพจาก base64 หรือ URL เป็น Blob
       const response = await axios.get(photo, { responseType: "blob" });
       const blob = response.data;
-  
+
       // ตรวจสอบขนาดของไฟล์ก่อนส่ง
       console.log("Photo Blob size:", blob.size);
-  
+
       // เพิ่มไฟล์ลงใน formData
       formData.append("image", blob, "photo.jpg");
-  
+
       // ส่งข้อมูลไปยัง server โดยใช้ axios
       const res = await axios.post(
         "https://stable-airedale-powerful.ngrok-free.app/compare-face",
@@ -44,10 +44,10 @@ const ScanStudent = () => {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-  
+
       const result = res.data;
       console.log(result);
-  
+
       if (result.status === "success") {
         // ใช้ SweetAlert เพื่อแสดงปุ่ม "เช็คชื่อ" และ "ยกเลิกการเช็คชื่อ"
         const { value: action } = await Swal.fire({
@@ -58,7 +58,7 @@ const ScanStudent = () => {
           confirmButtonText: "เช็คชื่อ",
           cancelButtonText: "ยกเลิกการเช็คชื่อ",
         });
-  
+
         if (action) {
           // ถ้าผู้ใช้เลือก "เช็คชื่อ"
           const attendanceRes = await axios.post(
@@ -66,7 +66,7 @@ const ScanStudent = () => {
             { name: result.name, confirm: true } // ส่งชื่อและการยืนยันไปยัง API
           );
           const attendanceResult = attendanceRes.data;
-  
+
           if (attendanceResult.status === "success") {
             Swal.fire({
               icon: "success",
@@ -106,8 +106,7 @@ const ScanStudent = () => {
       });
     }
   };
-  
-  
+
   return (
     <div className={style.container}>
       <div className={style.content}>

@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import style from "../style/Home.module.css";
 import Swal from "sweetalert2";
 import axios from "axios";
+import useStateUser from "../user/user-state";
+import { getUserData } from "../api/student";
 
 const Home = () => {
   const [userInfo, setUserInfo] = useState(null);
@@ -12,28 +14,18 @@ const Home = () => {
   const navigate = useNavigate();
   const previousLength = useRef(0);
   const isFirstLoad = useRef(true);
+  const token = useStateUser((state) => state.token);
 
   const cloudinaryUrl = "https://res.cloudinary.com/dwyxrfpal/image/upload/";
 
   const fetchUserData = async () => {
     try {
       setError(null);
-      const token = sessionStorage.getItem("token");
-
       if (!token) {
         navigate("/login");
         return;
       }
-
-      const response = await axios.get(
-        "https://check-name-server.vercel.app/api/listUsers",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
+      const response = await getUserData(token);
       const data = response.data;
       if (data.success) {
         if (data.user) {

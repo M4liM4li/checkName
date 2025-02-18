@@ -159,6 +159,7 @@
   border-radius: 5px;
   cursor: pointer;
   margin-left: 10px;
+
 }
 .buttonScan {
   padding: 8px 16px;
@@ -167,4 +168,5 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  text-decoration: underline;
 }

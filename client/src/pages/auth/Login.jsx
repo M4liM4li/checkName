@@ -2,51 +2,47 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2"; // เพิ่มการนำเข้า SweetAlert2
 import axios from "axios"; // นำเข้า axios
-import style from "../style/Login.module.css";
+import style from "../../style/Login.module.css";
+import useStateUser from "../../user/user-state";
 
 const Login = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const navigate = useNavigate();
-
+  const actionLogin = useStateUser((state) => state.actionLogin);
+  const user = useStateUser((state) => state.user);
   const cloudinaryUrl = "https://res.cloudinary.com/dwyxrfpal/image/upload/";
 
+  const [form, setForm] = useState({
+    username: "",
+    password: "",
+  });
+  const handleOnChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "https://check-name-server.vercel.app/api/login",
-        { username, password },
-        { headers: { "Content-Type": "application/json" } }
-      );
-
-      const data = response.data;
-
-      if (data.success) {
-        sessionStorage.setItem("user", JSON.stringify(data.user));
-        sessionStorage.setItem("token", data.token);
-
-        // แสดงข้อความแจ้งเตือนเมื่อเข้าสู่ระบบสำเร็จ
-        Swal.fire({
-          icon: "success",
-          title: "เข้าสู่ระบบสำเร็จ",
-          text: `ยินดีต้อนรับ`,
-          timer: 1200,
-        });
-
-        // หลังจากผู้ใช้กด "ตกลง" จะนำไปยังหน้าอื่น
-        if (data.user.role === "teacher") {
-          navigate("/Teacher");
-        } else {
-          navigate("/Home");
-        }
-      } else {
-        setError(data.message || "ข้อมูลไม่ถูกต้อง");
-      }
+      const res = await actionLogin(form);
+      const role = res.data.user.role;
+      console.log(role);
+      roleRedirect(role);
+      Swal.fire({
+        icon: "success",
+        title: "เข้าสู่ระบบสำเร็จ",
+        text: `ยินดีต้อนรับ`,
+        timer: 1200,
+      });
     } catch (err) {
       console.log(err);
-      setError("เกิดข้อผิดพลาดในการเชื่อมต่อ");
+    }
+  };
+  const roleRedirect = (role) => {
+    if (role === "teacher") {
+      navigate("/teacher");
+    } else {
+      navigate("/student");
     }
   };
 
@@ -81,8 +77,8 @@ const Login = () => {
               type="text"
               className={style.inputf}
               placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              name="username"
+              onChange={handleOnChange}
             />
             <span className={style.label}>Username</span>
           </div>
@@ -91,14 +87,13 @@ const Login = () => {
               type="password"
               className={style.inputf}
               placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              name="password"
+              onChange={handleOnChange}
             />
             <span className={style.label}>Password</span>
           </div>
           <button type="submit">Login</button>
         </form>
-        {error && <p className={style.error}>{error}</p>}
       </div>
     </div>
   );
