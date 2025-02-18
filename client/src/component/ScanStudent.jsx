@@ -109,6 +109,22 @@ const ScanStudent = () => {
 
   return (
     <div className={style.container}>
+      <div className={style.sun}></div>
+      <div className={style.cloud}>
+        <div className={style.cloud}></div>
+        <div className={style.cloud}></div>
+        <div className={style.cloud}></div>
+      </div>
+      <div className={style.cloud}>
+        <div className={style.cloud}></div>
+        <div className={style.cloud}></div>
+        <div className={style.cloud}></div>
+      </div>
+      <div className={style.cloud}>
+        <div className={style.cloud}></div>
+        <div className={style.cloud}></div>
+        <div className={style.cloud}></div>
+      </div>
       <div className={style.content}>
         <div className={style.question}>
           {isUsingCamera ? (

@@ -13,6 +13,23 @@ const Teacher = () => {
   };
   return (
     <div className={style.container}>
+      <div className={style.sun}></div>
+      <div className={style.cloud}>
+        <div className={style.cloud}></div>
+        <div className={style.cloud}></div>
+        <div className={style.cloud}></div>
+      </div>
+      <div className={style.cloud}>
+        <div className={style.cloud}></div>
+        <div className={style.cloud}></div>
+        <div className={style.cloud}></div>
+      </div>
+      <div className={style.cloud}>
+        <div className={style.cloud}></div>
+        <div className={style.cloud}></div>
+        <div className={style.cloud}></div>
+      </div>
+    
       <div className={style.content}>
         <div className={style.question}>
           <img
@@ -35,7 +52,7 @@ const Teacher = () => {
             <Link to={"/teacher/scan-student/"}>Scan</Link>
           </button>
           <button className={style.button} style={{ background: "#FF66CC" }}>
-            <Link to={"/teacher/list-student/" }>รายชื่อ</Link>
+            <Link to={"/teacher/list-student/"}>รายชื่อ</Link>
           </button>
         </div>
       </div>

@@ -87,6 +87,22 @@ const StudentList = () => {
 
   return (
     <div className={style.container}>
+      <div className={style.sun}></div>
+      <div className={style.cloud}>
+        <div className={style.cloud}></div>
+        <div className={style.cloud}></div>
+        <div className={style.cloud}></div>
+      </div>
+      <div className={style.cloud}>
+        <div className={style.cloud}></div>
+        <div className={style.cloud}></div>
+        <div className={style.cloud}></div>
+      </div>
+      <div className={style.cloud}>
+        <div className={style.cloud}></div>
+        <div className={style.cloud}></div>
+        <div className={style.cloud}></div>
+      </div>
       <div className={style.content}>
         <h4>รายชื่อ</h4>
         <ul>
