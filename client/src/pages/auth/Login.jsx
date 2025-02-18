@@ -25,25 +25,33 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await actionLogin(form);
+
+      if (!res.data || !res.data.user || !res.data.user.role) {
+        throw new Error("ข้อมูลผู้ใช้ไม่ถูกต้อง");
+      }
+
       const role = res.data.user.role;
       console.log(role);
+
       roleRedirect(role);
+
       Swal.fire({
         icon: "success",
         title: "เข้าสู่ระบบสำเร็จ",
-        text: `ยินดีต้อนรับ`,
+        text: "ยินดีต้อนรับ",
         timer: 1200,
       });
     } catch (err) {
       Swal.fire({
-        icon: "danger",
+        icon: "error", // แก้จาก "danger" เป็น "error"
         title: "เข้าสู่ระบบไม่สำเร็จ",
-        text: `รหัสนักศึกษาหรือรหัสผ่านไม่ถูกต้อง`,
+        text: "รหัสนักศึกษาหรือรหัสผ่านไม่ถูกต้อง",
         timer: 1200,
       });
-      console.log(err);
+      console.error("Login Error:", err);
     }
   };
+
   const roleRedirect = (role) => {
     if (role === "teacher") {
       navigate("/teacher");
