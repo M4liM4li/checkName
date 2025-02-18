@@ -35,6 +35,12 @@ const Login = () => {
         timer: 1200,
       });
     } catch (err) {
+      Swal.fire({
+        icon: "danger",
+        title: "เข้าสู่ระบบไม่สำเร็จ",
+        text: `รหัสนักศึกษาหรือรหัสผ่านไม่ถูกต้อง`,
+        timer: 1200,
+      });
       console.log(err);
     }
   };
