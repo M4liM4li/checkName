@@ -32,7 +32,7 @@ const Teacher = () => {
 
         <div className={style.buttonContainer}>
           <button className={style.button} style={{ background: "#66CCFF" }}>
-            <Link to={"/teacher/list-student/"}>Scan</Link>
+            <Link to={"/teacher/scan-student/"}>Scan</Link>
           </button>
           <button className={style.button} style={{ background: "#FF66CC" }}>
             <Link to={"/teacher/list-student/" }>รายชื่อ</Link>
