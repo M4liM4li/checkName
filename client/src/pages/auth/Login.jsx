@@ -30,15 +30,7 @@ const Login = () => {
         title: "กรุณากรอกข้อมูล",
         text: "ชื่อผู้ใช้ต้องมีอย่างน้อย 3 ตัวอักษร",
         timer: 1200,
-      });
-      return false;
-    }
-    if (form.password.length < 6) {
-      Swal.fire({
-        icon: "error",
-        title: "กรุณากรอกข้อมูล",
-        text: "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร",
-        timer: 1200,
+        
       });
       return false;
     }
