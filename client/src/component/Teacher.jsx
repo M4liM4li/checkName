@@ -29,7 +29,7 @@ const Teacher = () => {
         <div className={style.cloud}></div>
         <div className={style.cloud}></div>
       </div>
-    
+
       <div className={style.content}>
         <div className={style.question}>
           <img
