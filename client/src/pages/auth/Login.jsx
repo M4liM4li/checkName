@@ -79,7 +79,7 @@ const Login = () => {
       Swal.fire({
         icon: "error",
         title: "เข้าสู่ระบบไม่สำเร็จ",
-        text: err.message || "รหัสนักศึกษาหรือรหัสผ่านไม่ถูกต้อง",
+        text: "รหัสนักศึกษาหรือรหัสผ่านไม่ถูกต้อง",
         timer: 1200,
       });
       console.error("Login Error:", err);
