@@ -9,7 +9,7 @@ const Teacher = () => {
   const userInfo = {
     fullname: "อาจารย์ สุภาพร ผุดผ่อง",
     department: "แผนกเทคโนโลยีสารสนเทศ",
-    image: "65209010022.jpg",
+    image: "../public/teacher.jpg",
   };
   return (
     <div className={style.container}>
@@ -35,9 +35,6 @@ const Teacher = () => {
           <img
             src={`/assets/${userInfo.image}`}
             alt={userInfo?.fullname || "Profile"}
-            onError={(e) => {
-              e.target.src = "/assets/default-profile.png";
-            }}
           />
         </div>
         <h2 className={style.fullname} style={{ color: "#6A5ACD" }}>

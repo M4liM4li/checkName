@@ -1,55 +1,61 @@
 import React, { useState, useRef } from "react";
 import { Camera } from "react-camera-pro";
-import axios from "axios"; // นำเข้า axios
+import axios from "axios";
 import style from "../style/Teacher.module.css";
-import Swal from "sweetalert2"; // เพิ่มการนำเข้า SweetAlert2
+import Swal from "sweetalert2";
 
 const ScanStudent = () => {
   const camera = useRef(null);
   const [numberOfCameras, setNumberOfCameras] = useState(0);
   const [image, setImage] = useState(null);
   const [isUsingCamera, setIsUsingCamera] = useState(false);
-  const [students, setStudents] = useState([]); // ใช้ students state ตามที่ต้องการ
+  const [isProcessing, setIsProcessing] = useState(false); // เพิ่ม loading state
+  const [students, setStudents] = useState([]); // เก็บข้อมูลนักเรียนที่เช็คชื่อ
+
+  const FACE_API_URL = import.meta.env.VITE_API_URL || "https://stable-airedale-powerful.ngrok-free.app/compare-face";
+  const ATTENDANCE_API_URL = import.meta.env.VITE_API_URL || "https://check-name-server.vercel.app/api/attendance";
+
+  // แปลง base64 เป็น Blob
+  const base64ToBlob = (base64) => {
+    const byteString = atob(base64.split(",")[1]);
+    const mimeString = base64.split(",")[0].split(":")[1].split(";")[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], { type: mimeString });
+  };
 
   const handleTakePhoto = () => {
-    if (camera.current) {
+    if (camera.current && !isProcessing) {
       const photo = camera.current.takePhoto();
       setImage(photo);
       setIsUsingCamera(false);
-
-      // ส่งรูปภาพไปยัง server สำหรับประมวลผล
       sendImageToServer(photo);
     }
   };
 
   const sendImageToServer = async (photo) => {
+    setIsProcessing(true);
     try {
       const formData = new FormData();
-
-      // เปลี่ยนรูปภาพจาก base64 หรือ URL เป็น Blob
-      const response = await axios.get(photo, { responseType: "blob" });
-      const blob = response.data;
-
-      // ตรวจสอบขนาดของไฟล์ก่อนส่ง
+      const blob = base64ToBlob(photo);
       console.log("Photo Blob size:", blob.size);
-
-      // เพิ่มไฟล์ลงใน formData
       formData.append("image", blob, "photo.jpg");
 
-      // ส่งข้อมูลไปยัง server โดยใช้ axios
-      const res = await axios.post(
-        "https://stable-airedale-powerful.ngrok-free.app/compare-face",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      const token = localStorage.getItem("token"); // ดึง token จาก localStorage
+      const res = await axios.post(FACE_API_URL, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: token ? `Bearer ${token}` : undefined,
+        },
+      });
 
       const result = res.data;
       console.log(result);
 
       if (result.status === "success") {
-        // ใช้ SweetAlert เพื่อแสดงปุ่ม "เช็คชื่อ" และ "ยกเลิกการเช็คชื่อ"
         const { value: action } = await Swal.fire({
           title: `พบการจับคู่: ${result.name}`,
           text: `ความมั่นใจ: ${result.confidence}`,
@@ -60,10 +66,10 @@ const ScanStudent = () => {
         });
 
         if (action) {
-          // ถ้าผู้ใช้เลือก "เช็คชื่อ"
           const attendanceRes = await axios.post(
-            "https://check-name-server.vercel.app/api/attendance",
-            { name: result.name, confirm: true } // ส่งชื่อและการยืนยันไปยัง API
+            ATTENDANCE_API_URL,
+            { name: result.name, confirm: true },
+            { headers: { Authorization: token ? `Bearer ${token}` : undefined } }
           );
           const attendanceResult = attendanceRes.data;
 
@@ -71,10 +77,10 @@ const ScanStudent = () => {
             Swal.fire({
               icon: "success",
               title: "สำเร็จ",
-              text: `การเช็คชื่อสำเร็จ!`,
+              text: "การเช็คชื่อสำเร็จ!",
             });
-            // เพิ่มข้อมูล student ลงใน state
-            setStudents((prevStudents) => [...prevStudents, result.student]);
+            // ปรับให้ใช้ result.name แทน result.student
+            setStudents((prev) => [...prev, { name: result.name, confidence: result.confidence }]);
           } else {
             Swal.fire({
               icon: "error",
@@ -83,11 +89,10 @@ const ScanStudent = () => {
             });
           }
         } else {
-          // ถ้าผู้ใช้เลือก "ยกเลิกการเช็คชื่อ"
           Swal.fire({
             icon: "info",
             title: "การเช็คชื่อถูกยกเลิก",
-            text: `ไม่มีการเพิ่มข้อมูลการเช็คชื่อ`,
+            text: "ไม่มีการเพิ่มข้อมูลการเช็คชื่อ",
           });
         }
       } else {
@@ -104,27 +109,21 @@ const ScanStudent = () => {
         title: "ไม่สามารถส่งรูปภาพได้",
         text: error.response?.data?.message || "เกิดข้อผิดพลาดในการเชื่อมต่อ",
       });
+    } finally {
+      setIsProcessing(false);
     }
   };
 
   return (
     <div className={style.container}>
       <div className={style.sun}></div>
-      <div className={style.cloud}>
-        <div className={style.cloud}></div>
-        <div className={style.cloud}></div>
-        <div className={style.cloud}></div>
-      </div>
-      <div className={style.cloud}>
-        <div className={style.cloud}></div>
-        <div className={style.cloud}></div>
-        <div className={style.cloud}></div>
-      </div>
-      <div className={style.cloud}>
-        <div className={style.cloud}></div>
-        <div className={style.cloud}></div>
-        <div className={style.cloud}></div>
-      </div>
+      {[...Array(3)].map((_, index) => (
+        <div key={index} className={style.cloud}>
+          <div className={style.cloud}></div>
+          <div className={style.cloud}></div>
+          <div className={style.cloud}></div>
+        </div>
+      ))}
       <div className={style.content}>
         <div className={style.question}>
           {isUsingCamera ? (
@@ -143,13 +142,12 @@ const ScanStudent = () => {
               />
             </div>
           ) : image ? (
-            <img src={image} className={style.questionImg} />
+            <img src={image} className={style.questionImg} alt="Captured" />
           ) : (
             <img
+              src="/assets/default-profile.png"
               className={style.questionImg}
-              onError={(e) => {
-                e.target.src = "/assets/default-profile.png";
-              }}
+              alt="Default"
             />
           )}
         </div>
@@ -158,6 +156,7 @@ const ScanStudent = () => {
             <button
               className={style.buttonScan}
               onClick={() => setIsUsingCamera(true)}
+              disabled={isProcessing}
             >
               เปิดกล้อง
             </button>
@@ -167,17 +166,15 @@ const ScanStudent = () => {
                 className={style.button}
                 onClick={handleTakePhoto}
                 style={{ backgroundColor: "#48ff00" }}
+                disabled={isProcessing}
               >
-                ถ่ายรูป
+                {isProcessing ? "กำลังประมวลผล..." : "ถ่ายรูป"}
               </button>
               {numberOfCameras > 1 && (
                 <button
                   className={style.button}
-                  onClick={() => {
-                    if (camera.current) {
-                      camera.current.switchCamera();
-                    }
-                  }}
+                  onClick={() => camera.current?.switchCamera()}
+                  disabled={isProcessing}
                 >
                   สลับกล้อง
                 </button>
@@ -186,6 +183,7 @@ const ScanStudent = () => {
                 className={style.button}
                 onClick={() => setIsUsingCamera(false)}
                 style={{ backgroundColor: "#ff1e1e" }}
+                disabled={isProcessing}
               >
                 ยกเลิก
               </button>
