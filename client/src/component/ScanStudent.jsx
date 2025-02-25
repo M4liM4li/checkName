@@ -182,7 +182,7 @@ const ScanStudent = () => {
               </button>
               {numberOfCameras > 1 && (
                 <button
-                  className="button"
+                  className="button bg-amber-700"
                   onClick={() => camera.current?.switchCamera()}
                   disabled={isProcessing}
                 >
