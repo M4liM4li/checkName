@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Camera } from "react-camera-pro";
 import axios from "axios";
-import style from "../style/Teacher.module.css";
 import Swal from "sweetalert2";
 
 const ScanStudent = () => {
@@ -9,13 +8,12 @@ const ScanStudent = () => {
   const [numberOfCameras, setNumberOfCameras] = useState(0);
   const [image, setImage] = useState(null);
   const [isUsingCamera, setIsUsingCamera] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false); // เพิ่ม loading state
-  const [students, setStudents] = useState([]); // เก็บข้อมูลนักเรียนที่เช็คชื่อ
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [students, setStudents] = useState([]);
 
   const FACE_API_URL = import.meta.env.VITE_API_URL || "https://stable-airedale-powerful.ngrok-free.app/compare-face";
   const ATTENDANCE_API_URL = import.meta.env.VITE_API_URL || "https://check-name-server.vercel.app/api/attendance";
 
-  // แปลง base64 เป็น Blob
   const base64ToBlob = (base64) => {
     const byteString = atob(base64.split(",")[1]);
     const mimeString = base64.split(",")[0].split(":")[1].split(";")[0];
@@ -44,7 +42,7 @@ const ScanStudent = () => {
       console.log("Photo Blob size:", blob.size);
       formData.append("image", blob, "photo.jpg");
 
-      const token = localStorage.getItem("token"); // ดึง token จาก localStorage
+      const token = localStorage.getItem("token");
       const res = await axios.post(FACE_API_URL, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -79,7 +77,6 @@ const ScanStudent = () => {
               title: "สำเร็จ",
               text: "การเช็คชื่อสำเร็จ!",
             });
-            // ปรับให้ใช้ result.name แทน result.student
             setStudents((prev) => [...prev, { name: result.name, confidence: result.confidence }]);
           } else {
             Swal.fire({
@@ -115,19 +112,12 @@ const ScanStudent = () => {
   };
 
   return (
-    <div className={style.container}>
-      <div className={style.sun}></div>
-      {[...Array(3)].map((_, index) => (
-        <div key={index} className={style.cloud}>
-          <div className={style.cloud}></div>
-          <div className={style.cloud}></div>
-          <div className={style.cloud}></div>
-        </div>
-      ))}
-      <div className={style.content}>
-        <div className={style.question}>
+    <div className="container">
+      <div className="sun"></div>
+      <div className="content">
+        <div className="question">
           {isUsingCamera ? (
-            <div className={style.cameraContainer}>
+            <div className="cameraContainer">
               <Camera
                 ref={camera}
                 numberOfCamerasCallback={setNumberOfCameras}
@@ -142,17 +132,16 @@ const ScanStudent = () => {
               />
             </div>
           ) : image ? (
-            <img src={image} className={style.questionImg} alt="Captured" />
+            <img src={image} className="questionImg" alt="Captured" />
           ) : (
-            <img
-              className={style.questionImg}
-            />
+            <img className="questionImg" />
           )}
         </div>
-        <div className={style.buttonContainer}>
+        <div className="buttonContainer">
           {!isUsingCamera ? (
             <button
-              className={style.buttonScan}
+              className="button"
+              style={{ backgroundColor: "#FF66CC" }}
               onClick={() => setIsUsingCamera(true)}
               disabled={isProcessing}
             >
@@ -161,7 +150,7 @@ const ScanStudent = () => {
           ) : (
             <>
               <button
-                className={style.button}
+                className="button"
                 onClick={handleTakePhoto}
                 style={{ backgroundColor: "#48ff00" }}
                 disabled={isProcessing}
@@ -170,7 +159,7 @@ const ScanStudent = () => {
               </button>
               {numberOfCameras > 1 && (
                 <button
-                  className={style.button}
+                  className="button"
                   onClick={() => camera.current?.switchCamera()}
                   disabled={isProcessing}
                 >
@@ -178,7 +167,7 @@ const ScanStudent = () => {
                 </button>
               )}
               <button
-                className={style.button}
+                className="button"
                 onClick={() => setIsUsingCamera(false)}
                 style={{ backgroundColor: "#ff1e1e" }}
                 disabled={isProcessing}

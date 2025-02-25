@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import style from "../style/Home.module.css";
 import Swal from "sweetalert2";
 import axios from "axios";
 import useStateUser from "../user/user-state";
@@ -12,7 +11,7 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const previousLatestId = useRef(null); // เปลี่ยนเป็นเก็บ ID ล่าสุด
+  const previousLatestId = useRef(null);
   const isFirstLoad = useRef(true);
   const token = useStateUser((state) => state.token);
 
@@ -34,7 +33,7 @@ const Home = () => {
 
       if (data.attendanceRecords) {
         const sortedRecords = data.attendanceRecords.sort(
-          (a, b) => new Date(b.time) - new Date(a.time) // เรียงใหม่สุดก่อน
+          (a, b) => new Date(b.time) - new Date(a.time)
         );
         const latestRecordId = sortedRecords[0]?.attendanceId;
 
@@ -69,21 +68,21 @@ const Home = () => {
 
   useEffect(() => {
     fetchUserData();
-    const interval = setInterval(fetchUserData, 3000); // ปรับเป็น 10 วินาที
+    const interval = setInterval(fetchUserData, 3000);
     return () => clearInterval(interval);
   }, [navigate, token]);
 
   if (isLoading) {
-    return <div className={style.loading}>Loading...</div>;
+    return <div className="loading">Loading...</div>;
   }
 
   if (error) {
-    return <div className={style.error}>{error}</div>;
+    return <div className="error">{error}</div>;
   }
 
   const UserProfile = () => (
     <>
-      <div className={style.question}>
+      <div className="question">
         <img
           src={
             userInfo?.image
@@ -100,15 +99,11 @@ const Home = () => {
   );
 
   const AttendanceList = () => (
-    <div className={style.attendance}>
+    <div className="attendance">
       <ul>
         {attendanceRecords.map((record) => (
-          <li key={record.attendanceId} className={style.record}>
-            <h2
-              className={
-                record.status === "1" ? style.absent : style.present // ปรับ logic ให้ชัดเจน
-              }
-            >
+          <li key={record.attendanceId} className="record">
+            <h2 className={record.status === "1" ? "absent" : "present"}>
               {record.status === "1" ? "ยังไม่เช็คชื่อ" : "เช็คชื่อแล้ว"}
             </h2>
             <h4>{new Date(record.time).toLocaleString("th-TH")}</h4>
@@ -119,16 +114,9 @@ const Home = () => {
   );
 
   return (
-    <div className={style.container}>
-      <div className={style.sun}></div>
-      {[...Array(4)].map((_, index) => (
-        <div key={index} className={style.cloud}>
-          <div className={style.cloud}></div>
-          <div className={style.cloud}></div>
-          <div className={style.cloud}></div>
-        </div>
-      ))}
-      <div className={style.content}>
+    <div className="container">
+      <div className="sun"></div>
+      <div className="content">
         {userInfo && <UserProfile />}
         {attendanceRecords.length > 0 && <AttendanceList />}
       </div>

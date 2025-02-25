@@ -1,1 +1,496 @@
-@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Mitr&display=swap");
+
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #87cefa, #1e90ff);
+  font-family: "Mitr", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.5;
+}
+
+/* Container */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Sun Element */
+.sun {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 80px;
+  background-color: #ffd700;
+  border-radius: 50%;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
+  z-index: 0;
+}
+
+/* Content Box */
+.content {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+  z-index: 2;
+  position: relative;
+}
+
+.content h2 {
+  margin-bottom: 0.75rem;
+  font-size: 1.75rem;
+}
+
+.content h3 {
+  padding-bottom: 1.25rem;
+  font-size: 1.3rem;
+}
+
+.content h4 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+/* Profile/Question Image */
+.question {
+  width: 150px;
+  height: 150px;
+  margin: 0 auto 1.5rem;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: black;
+}
+
+.question img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Student List */
+.studentList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+}
+
+.name {
+  padding-right: 20px;
+  text-align: left;
+  font-size: 1.1rem;
+}
+
+.status {
+  flex: 2;
+  text-align: right;
+  font-size: 1rem;
+  color: #0a1aff;
+}
+
+/* Attendance List */
+.attendance {
+  width: 100%;
+  margin: 1.5rem auto 0;
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Center vertically if needed */
+}
+
+/* Attendance List Items */
+.attendance ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  max-height: 300px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center list items horizontally */
+}
+
+/* Record Item */
+.record {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* Ensure it takes full available width */
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #eee;
+  background-color: #f9f9f9;
+  transition: background-color 0.2s ease;
+  text-align: center;
+}
+
+.record:hover {
+  background-color: #f0f0f0;
+}
+
+/* Status Heading */
+.record h2 {
+  margin: 0 1rem 0 0;
+  font-size: 1.2rem;
+  font-weight: 500;
+  flex: 1;
+}
+
+/* Absent Status */
+.absent {
+  color: #d33;
+}
+
+/* Present Status */
+.present {
+  color: #32cd32;
+}
+
+/* Timestamp */
+.record h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #666;
+  font-weight: 400;
+  flex: 1;
+}
+
+/* Button Container */
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* Button Styles */
+.button {
+  padding: 0.6rem 1.2rem;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.button:hover {
+  transform: scale(1.05);
+}
+
+.deleteButton {
+  background-color: #d33;
+}
+
+.deleteButton:hover {
+  background-color: #b32;
+}
+
+.exportButton {
+  background-color: #3085d6;
+}
+
+.exportButton:hover {
+  background-color: #276db5;
+}
+
+.button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Login Button */
+.loginButton {
+  width: 80%;
+  margin-top: 20px;
+  background-color: #66ff00;
+}
+
+.loginButton:hover {
+  background-color: #55cc00; /* Darker green on hover */
+}
+
+/* Loading and Error States */
+.loading,
+.error {
+  background: white;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  font-size: 1.2rem;
+  z-index: 2;
+  position: relative;
+}
+
+/* Input Styles */
+.input {
+  position: relative;
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.inputf {
+  width: 100%;
+  height: 45px;
+  font-family: "Mitr", sans-serif;
+  border: 1px solid rgb(62, 62, 62);
+  outline: none;
+  padding: 0 0.75rem;
+  border-radius: 5px;
+  font-size: 1.04rem;
+  transition: box-shadow 0.2s ease;
+}
+
+.inputf:focus {
+  box-shadow: 4px 4px 0 rgb(62, 62, 62);
+}
+
+.label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  position: absolute;
+  top: 50%;
+  left: 0.75rem;
+  transform: translateY(-50%);
+  color: black;
+  background: white;
+  padding: 0 0.25rem;
+  transition: all 0.25s ease;
+  pointer-events: none;
+}
+
+.inputf:focus + .label,
+.inputf:not(:placeholder-shown) + .label {
+  top: -0.75rem;
+  font-size: 0.8rem;
+}
+
+.inputf:not(:placeholder-shown) {
+  box-shadow: 4px 4px 0 rgb(62, 62, 62);
+}
+
+.inputf:disabled {
+  background-color: #f0f0f0;
+  cursor: not-allowed;
+}
+
+/* Small Alert */
+.small-alert {
+  font-size: 0.875rem;
+  padding: 0.625rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .content {
+    padding: 2rem;
+    max-width: 90%;
+  }
+
+  .question {
+    width: 120px;
+    height: 120px;
+  }
+
+  .sun {
+    width: 60px;
+    height: 60px;
+    top: 15px;
+  }
+
+  .studentList,
+  .attendance ul {
+    max-height: 250px;
+  }
+
+  .li,
+  .record {
+    flex-direction: column;
+    align-items: center; /* Center items when stacked */
+    padding: 0.5rem 0.75rem;
+  }
+
+  .name,
+  .status,
+  .record h2 {
+    text-align: center; /* Center text when stacked */
+    font-size: 1rem;
+  }
+
+  .record h4 {
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+    text-align: center; /* Center timestamp */
+  }
+
+  .button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+  }
+
+  .inputf {
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .loading,
+  .error {
+    padding: 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .content {
+    padding: 1.5rem;
+  }
+
+  .content h2 {
+    font-size: 1.4rem;
+  }
+
+  .content h3 {
+    font-size: 1.1rem;
+  }
+
+  .content h4 {
+    font-size: 1.3rem;
+  }
+
+  .question {
+    width: 100px;
+    height: 100px;
+  }
+
+  .sun {
+    width: 50px;
+    height: 50px;
+  }
+
+  .studentList,
+  .attendance ul {
+    max-height: 250px;
+  }
+
+  .name,
+  .status,
+  .record h2 {
+    font-size: 0.9rem;
+  }
+
+  .record h4 {
+    font-size: 0.85rem;
+  }
+
+  .buttonContainer {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .button {
+    width: 100%;
+  }
+}
+
+/* High DPI and Windows Scaling Adjustment */
+@media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) {
+  .content {
+    padding: 3rem;
+    max-width: 480px;
+  }
+
+  .question {
+    width: 160px;
+    height: 160px;
+  }
+
+  .sun {
+    width: 90px;
+    height: 90px;
+  }
+
+  .studentList + .content,
+  .attendance + .content {
+    max-width: 650px;
+  }
+
+  .record h2 {
+    font-size: 1.3rem;
+  }
+
+  .record h4 {
+    font-size: 1rem;
+  }
+}
+.li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  margin-bottom: 12px;
+  background: #f7f9fc;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  font-size: 1em;
+  color: #555;
+}
+
+.li:nth-child(even) {
+  background: #eaf3ff;
+}
+
+.name {
+  font-weight: 600;
+  color: #333;
+}
+
+.status {
+  font-size: 0.9em;
+  font-style: italic;
+  color: #007bff;
+}
+
+.li:hover {
+  transform: scale(1.02);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}

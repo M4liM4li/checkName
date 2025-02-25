@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import style from "../style/StudentList.module.css";
 import * as XLSX from "xlsx";
 import Swal from "sweetalert2";
 import axios from "axios";
 
 const StudentList = () => {
   const [students, setStudents] = useState([]);
-  const [isLoading, setIsLoading] = useState(false); // เพิ่ม loading state
+  const [isLoading, setIsLoading] = useState(false);
 
   const API_URL = import.meta.env.VITE_API_URL || "https://check-name-server.vercel.app";
 
@@ -32,7 +31,7 @@ const StudentList = () => {
 
   useEffect(() => {
     fetchStudents();
-    const interval = setInterval(fetchStudents, 10000); // Polling ทุก 10 วินาที
+    const interval = setInterval(fetchStudents, 10000);
     return () => clearInterval(interval);
   }, []);
 
@@ -51,7 +50,6 @@ const StudentList = () => {
       XLSX.utils.book_append_sheet(wb, ws, "Students");
       XLSX.writeFile(wb, "รายชื่อนักเรียน.xlsx");
 
-      // ลบข้อมูลหลัง export (ถ้าต้องการ)
       await deleteAllStudents();
     } catch (error) {
       Swal.fire({
@@ -70,7 +68,7 @@ const StudentList = () => {
       headers: { Authorization: token ? `Bearer ${token}` : undefined },
     });
     if (response.status === 200) {
-      setStudents([]); // อัปเดต state แทน reload
+      setStudents([]);
       return true;
     }
     throw new Error(response.data.message || "ไม่สามารถลบข้อมูลได้");
@@ -110,28 +108,20 @@ const StudentList = () => {
   };
 
   return (
-    <div className={style.container}>
-      <div className={style.sun}></div>
-      {[...Array(3)].map((_, index) => (
-        <div key={index} className={style.cloud}>
-          <div className={style.cloud}></div>
-          <div className={style.cloud}></div>
-          <div className={style.cloud}></div>
-        </div>
-      ))}
-      <div className={style.content}>
+    <div className="container">
+      <div className="sun"></div>
+      <div className="content">
         <h4>รายชื่อ</h4>
         {isLoading ? (
-          <div className={style.loading}>กำลังโหลด...</div>
+          <div className="loading">กำลังโหลด...</div>
         ) : students.length === 0 ? (
           <p>ไม่มีข้อมูลนักเรียน</p>
         ) : (
-          <ul>
+          <ul className="studentList">
             {students.map((student) => (
-              <li key={student.id} className={style.li}>
-                <span className={style.name}>{student.user.stdcode}</span>
-                <span className={style.name}>{student.user.fullname}</span>
-                <span className={style.status}>
+              <li key={student.id} className="li">
+                <span className="name">{student.user.fullname}</span>
+                <span className="status">
                   {student.status === "1"
                     ? "ยังไม่เช็คชื่อ"
                     : `เช็คชื่อแล้ว ${new Date(student.createdAt).toLocaleTimeString("th-TH")}`}
@@ -140,17 +130,17 @@ const StudentList = () => {
             ))}
           </ul>
         )}
-        <div className={style.buttonContainer}>
+        <div className="buttonContainer">
           <button
             onClick={deleteName}
-            className={style.deleteButton}
+            className="button deleteButton"
             disabled={isLoading}
           >
             ลบ
           </button>
           <button
             onClick={exportToExcel}
-            className={style.exportButton}
+            className="button exportButton"
             disabled={isLoading}
           >
             Export

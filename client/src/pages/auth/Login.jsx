@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
-import style from "../../style/Login.module.css";
 import useStateUser from "../../user/user-state";
 
 const Login = () => {
@@ -14,7 +13,7 @@ const Login = () => {
     username: "",
     password: "",
   });
-  const [isLoading, setIsLoading] = useState(false); // เพิ่ม loading state
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleOnChange = (e) => {
     setForm({
@@ -30,7 +29,6 @@ const Login = () => {
         title: "กรุณากรอกข้อมูล",
         text: "ชื่อผู้ใช้ต้องมีอย่างน้อย 3 ตัวอักษร",
         timer: 1200,
-        
       });
       return false;
     }
@@ -42,7 +40,7 @@ const Login = () => {
 
     if (!validateForm()) return;
 
-    setIsLoading(true); // เริ่ม loading
+    setIsLoading(true);
 
     try {
       const res = await actionLogin(form);
@@ -54,12 +52,9 @@ const Login = () => {
       const { role } = res.data.user;
       console.log("User role:", role);
 
-      // เก็บ token (ถ้า backend ส่งมา)
       if (res.data.token) {
         localStorage.setItem("token", res.data.token);
       }
-
-      roleRedirect(role);
 
       Swal.fire({
         icon: "success",
@@ -67,6 +62,11 @@ const Login = () => {
         text: "ยินดีต้อนรับ",
         timer: 1000,
       });
+
+      setTimeout(() => {
+        roleRedirect(role);
+      }, 10000);
+      roleRedirect(role);
     } catch (err) {
       Swal.fire({
         icon: "error",
@@ -76,7 +76,7 @@ const Login = () => {
       });
       console.error("Login Error:", err);
     } finally {
-      setIsLoading(false); // หยุด loading
+      setIsLoading(false);
     }
   };
 
@@ -89,44 +89,36 @@ const Login = () => {
   };
 
   return (
-    <div className={style.container}>
-      <div className={style.sun}></div>
-      {/* ลดการซ้ำซ้อนของ cloud ด้วยการใช้ array */}
-      {[...Array(4)].map((_, index) => (
-        <div key={index} className={style.cloud}>
-          <div className={style.cloud}></div>
-          <div className={style.cloud}></div>
-          <div className={style.cloud}></div>
-        </div>
-      ))}
-      <div className={style.content}>
+    <div className="container">
+      <div className="sun"></div>
+      <div className="content">
         <h2>Login</h2>
         <form onSubmit={handleSubmit}>
-          <div className={style.input}>
+          <div className="input">
             <input
               type="text"
-              className={style.inputf}
+              className="inputf"
               placeholder="Username"
               name="username"
               value={form.username}
               onChange={handleOnChange}
               disabled={isLoading}
             />
-            <span className={style.label}>Username</span>
+            <span className="label">Username</span>
           </div>
-          <div className={style.input}>
+          <div className="input">
             <input
               type="password"
-              className={style.inputf}
+              className="inputf"
               placeholder="Password"
               name="password"
               value={form.password}
               onChange={handleOnChange}
               disabled={isLoading}
             />
-            <span className={style.label}>Password</span>
+            <span className="label">Password</span>
           </div>
-          <button type="submit" disabled={isLoading}>
+          <button type="submit" disabled={isLoading} className="button loginButton">
             {isLoading ? "Logging in..." : "Login"}
           </button>
         </form>

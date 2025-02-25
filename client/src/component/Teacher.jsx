@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
-import style from "../style/Teacher.module.css";
-
+import { useNavigate, Link } from "react-router-dom";
 import useStateUser from "../user/user-state";
-import { getUserData } from "../api/student"; // สมมติว่ามี API สำหรับ teacher
+import { getUserData } from "../api/student";
 
 const Teacher = () => {
   const [userInfo, setUserInfo] = useState(null);
@@ -58,26 +55,18 @@ const Teacher = () => {
   }, [token, navigate]);
 
   if (isLoading) {
-    return <div className={style.loading}>กำลังโหลด...</div>;
+    return <div className="loading">กำลังโหลด...</div>;
   }
 
   if (error) {
-    return <div className={style.error}>{error}</div>;
+    return <div className="error">{error}</div>;
   }
 
   return (
-    <div className={style.container}>
-      <div className={style.sun}></div>
-      {[...Array(3)].map((_, index) => (
-        <div key={index} className={style.cloud}>
-          <div className={style.cloud}></div>
-          <div className={style.cloud}></div>
-          <div className={style.cloud}></div>
-        </div>
-      ))}
-
-      <div className={style.content}>
-        <div className={style.question}>
+    <div className="container">
+      <div className="sun"></div>
+      <div className="content">
+        <div className="question">
           <img
             src={
               userInfo?.image
@@ -85,31 +74,24 @@ const Teacher = () => {
                 : DEFAULT_PROFILE_IMAGE
             }
             alt={userInfo?.fullname || "โปรไฟล์"}
-            className={style.profileImage}
+            className="profileImage"
             onError={(e) => (e.target.src = DEFAULT_PROFILE_IMAGE)}
           />
         </div>
-        <h2 className={style.fullname} style={{ color: "#6A5ACD" }}>
+        <h2 className="fullname" style={{ color: "#6A5ACD" }}>
           {userInfo?.fullname}
         </h2>
-        <h3 className={style.department} style={{ color: "#FF0A0E" }}>
+        <h3 className="department" style={{ color: "#FF0A0E" }}>
           {userInfo?.department}
         </h3>
-
-        <div className={style.buttonContainer}>
+        <div className="buttonContainer">
           <Link to="/teacher/scan-student">
-            <button
-              className={style.button}
-              style={{ backgroundColor: "#66CCFF" }}
-            >
+            <button className="button" style={{ backgroundColor: "#66CCFF" }}>
               Scan
             </button>
           </Link>
           <Link to="/teacher/list-student">
-            <button
-              className={style.button}
-              style={{ backgroundColor: "#FF66CC" }}
-            >
+            <button className="button" style={{ backgroundColor: "#FF66CC" }}>
               รายชื่อ
             </button>
           </Link>
