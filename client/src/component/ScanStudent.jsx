@@ -130,15 +130,17 @@ const ScanStudent = () => {
     <div className="container">
       <div className="sun"></div>
       <div className="content flex flex-col gap-5 w-92">
-        {numberOfCameras > 1 && (
-          <button
-            className="button bg-amber-700"
-            onClick={() => camera.current?.switchCamera()}
-            disabled={isProcessing}
-          >
-            <SwitchCamera />
-          </button>
-        )}
+        <div className="flex justify-end items-end">
+          {numberOfCameras > 1 && (
+            <button
+              className="w-8 h-8 bg-purple-600 rounded-md text-white p-1 flex  justify-center items-center hover:scale-105 shadow-md transition-all duration-300"
+              onClick={() => camera.current?.switchCamera()}
+              disabled={isProcessing}
+            >
+              <SwitchCamera />
+            </button>
+          )}
+        </div>
         <button
           className="w-8 h-8 bg-blue-500 rounded-md text-white p-1 flex  justify-center items-center hover:scale-105 shadow-md transition-all duration-300"
           onClick={handleBack}
