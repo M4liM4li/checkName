@@ -21,12 +21,6 @@ const Home = () => {
 
   const fetchUserData = async () => {
     try {
-      setError(null);
-      if (!token) {
-        navigate("/login");
-        return;
-      }
-
       const response = await getUserData(token);
       const data = response.data;
 

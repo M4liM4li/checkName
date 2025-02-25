@@ -65,7 +65,7 @@ const Login = () => {
         icon: "success",
         title: "เข้าสู่ระบบสำเร็จ",
         text: "ยินดีต้อนรับ",
-        timer: 1200,
+        timer: 1000,
       });
     } catch (err) {
       Swal.fire({

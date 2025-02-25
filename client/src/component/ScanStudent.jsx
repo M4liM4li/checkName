@@ -145,9 +145,7 @@ const ScanStudent = () => {
             <img src={image} className={style.questionImg} alt="Captured" />
           ) : (
             <img
-              src="/assets/default-profile.png"
               className={style.questionImg}
-              alt="Default"
             />
           )}
         </div>
