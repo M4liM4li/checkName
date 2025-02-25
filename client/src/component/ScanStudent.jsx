@@ -4,6 +4,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { SwitchCamera } from "lucide-react";
 
 const ScanStudent = () => {
   const camera = useRef(null);
@@ -129,6 +130,15 @@ const ScanStudent = () => {
     <div className="container">
       <div className="sun"></div>
       <div className="content flex flex-col gap-5 w-92">
+        {numberOfCameras > 1 && (
+          <button
+            className="button bg-amber-700"
+            onClick={() => camera.current?.switchCamera()}
+            disabled={isProcessing}
+          >
+            <SwitchCamera />
+          </button>
+        )}
         <button
           className="w-8 h-8 bg-blue-500 rounded-md text-white p-1 flex  justify-center items-center hover:scale-105 shadow-md transition-all duration-300"
           onClick={handleBack}
@@ -180,15 +190,7 @@ const ScanStudent = () => {
               >
                 {isProcessing ? "กำลังประมวลผล..." : "ถ่ายรูป"}
               </button>
-              {numberOfCameras > 1 && (
-                <button
-                  className="button bg-amber-700"
-                  onClick={() => camera.current?.switchCamera()}
-                  disabled={isProcessing}
-                >
-                  สลับกล้อง
-                </button>
-              )}
+
               <button
                 className="button"
                 onClick={() => setIsUsingCamera(false)}
