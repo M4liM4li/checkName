@@ -131,6 +131,12 @@ const ScanStudent = () => {
       <div className="sun"></div>
       <div className="content flex flex-col gap-5 w-92">
         <div className="flex justify-between ">
+          <button
+            className="w-8 h-8 bg-blue-500 rounded-md text-white p-1 flex  justify-center items-center hover:scale-105 shadow-md transition-all duration-300"
+            onClick={handleBack}
+          >
+            <ArrowLeft />
+          </button>
           {numberOfCameras > 1 && (
             <button
               className="w-8 h-8 bg-purple-600 rounded-md text-white p-1 flex  justify-center items-center hover:scale-105 shadow-md transition-all duration-300"
@@ -140,12 +146,6 @@ const ScanStudent = () => {
               <SwitchCamera />
             </button>
           )}
-          <button
-            className="w-8 h-8 bg-blue-500 rounded-md text-white p-1 flex  justify-center items-center hover:scale-105 shadow-md transition-all duration-300"
-            onClick={handleBack}
-          >
-            <ArrowLeft />
-          </button>
         </div>
         <div className=" flex justify-center items-center">
           <div className="overflow-hidden w-50 h-50 rounded-full bg-gray-300 ">
