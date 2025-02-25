@@ -120,7 +120,7 @@ const Home = () => {
   return (
     <div className="container">
       <div className="sun"></div>
-      <div className="content">
+      <div className="content w-92 ">
         <div className="flex justify-end items-end">
           <button className="w-7 h-7 bg-red-500 rounded-md text-white p-2 flex justify-center items-center hover:scale-105 shadow-md transition-all duration-300" onClick={handleLogout}>
             <LogOut className="w-5 h-5" />

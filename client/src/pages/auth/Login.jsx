@@ -91,7 +91,7 @@ const Login = () => {
   return (
     <div className="container">
       <div className="sun"></div>
-      <div className="content">
+      <div className="content w-92">
         <h2>Login</h2>
         <form onSubmit={handleSubmit}>
           <div className="input">

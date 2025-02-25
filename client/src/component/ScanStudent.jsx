@@ -123,37 +123,43 @@ const ScanStudent = () => {
     }
   };
   const handleBack = () => {
-    navigate(-1); 
+    navigate(-1);
   };
   return (
     <div className="container">
       <div className="sun"></div>
-      <div className="content flex flex-col gap-5">
-        <button className="w-8 h-8 bg-blue-500 rounded-md text-white p-1 flex  justify-center items-center hover:scale-105 shadow-md transition-all duration-300" onClick={handleBack}>
+      <div className="content flex flex-col gap-5 w-92">
+        <button
+          className="w-8 h-8 bg-blue-500 rounded-md text-white p-1 flex  justify-center items-center hover:scale-105 shadow-md transition-all duration-300"
+          onClick={handleBack}
+        >
           <ArrowLeft />
         </button>
-        <div className="overflow-hidden w-50 h-50 rounded-full bg-gray-300">
-          {isUsingCamera ? (
-            <div className="cameraContainer">
-              <Camera
-                ref={camera}
-                numberOfCamerasCallback={setNumberOfCameras}
-                facingMode="environment"
-                aspectRatio={1}
-                errorMessages={{
-                  noCameraAccessible: "ไม่สามารถเข้าถึงกล้องได้",
-                  permissionDenied: "กรุณาอนุญาตการใช้งานกล้อง",
-                  switchCamera: "ไม่สามารถสลับกล้องได้",
-                  canvas: "Canvas ไม่สามารถใช้งานได้",
-                }}
-              />
-            </div>
-          ) : image ? (
-            <img src={image} className="questionImg" alt="Captured" />
-          ) : (
-            <img className="questionImg" />
-          )}
+        <div className=" flex justify-center items-center">
+          <div className="overflow-hidden w-50 h-50 rounded-full bg-gray-300 ">
+            {isUsingCamera ? (
+              <div className="cameraContainer">
+                <Camera
+                  ref={camera}
+                  numberOfCamerasCallback={setNumberOfCameras}
+                  facingMode="environment"
+                  aspectRatio={1}
+                  errorMessages={{
+                    noCameraAccessible: "ไม่สามารถเข้าถึงกล้องได้",
+                    permissionDenied: "กรุณาอนุญาตการใช้งานกล้อง",
+                    switchCamera: "ไม่สามารถสลับกล้องได้",
+                    canvas: "Canvas ไม่สามารถใช้งานได้",
+                  }}
+                />
+              </div>
+            ) : image ? (
+              <img src={image} className="questionImg" alt="Captured" />
+            ) : (
+              <img className="questionImg" />
+            )}
+          </div>
         </div>
+
         <div className="buttonContainer">
           {!isUsingCamera ? (
             <button

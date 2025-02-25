@@ -115,7 +115,7 @@ const StudentList = () => {
   return (
     <div className="container">
       <div className="sun"></div>
-      <div className="content">
+      <div className="content w-92">
       <button className="w-7 h-7 bg-blue-500 rounded-md text-white p-1 flex  justify-center items-center hover:scale-105 shadow-md transition-all duration-300" onClick={handleBack}>
           <ArrowLeft />
         </button>
