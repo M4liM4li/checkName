@@ -48,10 +48,6 @@ const Teacher = () => {
   };
 
   useEffect(() => {
-    if (!token) {
-      navigate("/login");
-      return;
-    }
     fetchUserData();
   }, [token, navigate]);
 
