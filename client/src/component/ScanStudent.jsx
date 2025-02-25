@@ -2,6 +2,8 @@ import React, { useState, useRef } from "react";
 import { Camera } from "react-camera-pro";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const ScanStudent = () => {
   const camera = useRef(null);
@@ -10,9 +12,14 @@ const ScanStudent = () => {
   const [isUsingCamera, setIsUsingCamera] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [students, setStudents] = useState([]);
+  const navigate = useNavigate();
 
-  const FACE_API_URL = import.meta.env.VITE_API_URL || "https://stable-airedale-powerful.ngrok-free.app/compare-face";
-  const ATTENDANCE_API_URL = import.meta.env.VITE_API_URL || "https://check-name-server.vercel.app/api/attendance";
+  const FACE_API_URL =
+    import.meta.env.VITE_API_URL ||
+    "https://stable-airedale-powerful.ngrok-free.app/compare-face";
+  const ATTENDANCE_API_URL =
+    import.meta.env.VITE_API_URL ||
+    "https://check-name-server.vercel.app/api/attendance";
 
   const base64ToBlob = (base64) => {
     const byteString = atob(base64.split(",")[1]);
@@ -67,7 +74,9 @@ const ScanStudent = () => {
           const attendanceRes = await axios.post(
             ATTENDANCE_API_URL,
             { name: result.name, confirm: true },
-            { headers: { Authorization: token ? `Bearer ${token}` : undefined } }
+            {
+              headers: { Authorization: token ? `Bearer ${token}` : undefined },
+            }
           );
           const attendanceResult = attendanceRes.data;
 
@@ -77,7 +86,10 @@ const ScanStudent = () => {
               title: "สำเร็จ",
               text: "การเช็คชื่อสำเร็จ!",
             });
-            setStudents((prev) => [...prev, { name: result.name, confidence: result.confidence }]);
+            setStudents((prev) => [
+              ...prev,
+              { name: result.name, confidence: result.confidence },
+            ]);
           } else {
             Swal.fire({
               icon: "error",
@@ -110,12 +122,17 @@ const ScanStudent = () => {
       setIsProcessing(false);
     }
   };
-
+  const handleBack = () => {
+    navigate(-1); 
+  };
   return (
     <div className="container">
       <div className="sun"></div>
-      <div className="content">
-        <div className="question">
+      <div className="content flex flex-col gap-5">
+        <button className="w-8 h-8 bg-blue-500 rounded-md text-white p-1 flex  justify-center items-center hover:scale-105 shadow-md transition-all duration-300" onClick={handleBack}>
+          <ArrowLeft />
+        </button>
+        <div className="overflow-hidden w-50 h-50 rounded-full bg-gray-300">
           {isUsingCamera ? (
             <div className="cameraContainer">
               <Camera

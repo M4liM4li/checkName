@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import useStateUser from "../user/user-state";
 import { getUserData } from "../api/student";
-
+import { LogOut } from "lucide-react";
 const Home = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [attendanceRecords, setAttendanceRecords] = useState([]);
@@ -112,11 +112,21 @@ const Home = () => {
       </ul>
     </div>
   );
-
+  const handleLogout = () => {
+    localStorage.removeItem('userToken');
+    sessionStorage.clear();
+    navigate('/'); // Redirects to Login
+  };
   return (
     <div className="container">
       <div className="sun"></div>
       <div className="content">
+        <div className="flex justify-end items-end">
+          <button className="w-7 h-7 bg-red-500 rounded-md text-white p-2 flex justify-center items-center hover:scale-105 shadow-md transition-all duration-300" onClick={handleLogout}>
+            <LogOut className="w-5 h-5" />
+          </button>
+        </div>
+
         {userInfo && <UserProfile />}
         {attendanceRecords.length > 0 && <AttendanceList />}
       </div>

@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 import * as XLSX from "xlsx";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const StudentList = () => {
   const [students, setStudents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const API_URL = import.meta.env.VITE_API_URL || "https://check-name-server.vercel.app";
 
@@ -106,11 +109,16 @@ const StudentList = () => {
       }
     });
   };
-
+  const handleBack = () => {
+    navigate(-1); 
+  };
   return (
     <div className="container">
       <div className="sun"></div>
       <div className="content">
+      <button className="w-7 h-7 bg-blue-500 rounded-md text-white p-1 flex  justify-center items-center hover:scale-105 shadow-md transition-all duration-300" onClick={handleBack}>
+          <ArrowLeft />
+        </button>
         <h4>รายชื่อ</h4>
         {isLoading ? (
           <div className="loading">กำลังโหลด...</div>
