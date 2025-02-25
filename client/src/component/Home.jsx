@@ -75,7 +75,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchUserData();
-    const interval = setInterval(fetchUserData, 10000); // ปรับเป็น 10 วินาที
+    const interval = setInterval(fetchUserData, 3000); // ปรับเป็น 10 วินาที
     return () => clearInterval(interval);
   }, [navigate, token]);
 
