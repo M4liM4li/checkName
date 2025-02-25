@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import useStateUser from "../user/user-state";
 import { getUserData } from "../api/student";
-import { LogOut } from "lucide-react";
+import { LogOut,LoaderCircle } from "lucide-react";
 const Home = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [attendanceRecords, setAttendanceRecords] = useState([]);
@@ -73,7 +73,13 @@ const Home = () => {
   }, [navigate, token]);
 
   if (isLoading) {
-    return <div className="loading">Loading...</div>;
+    return (
+      <div className="bg-white w-24 h-24 rounded-3xl shadow-lg">
+        <div className="animate-spin flex justify-center items-center h-full ">
+          <LoaderCircle className="w-12 h-12" />
+        </div>
+      </div>
+    );
   }
 
   if (error) {
@@ -113,16 +119,19 @@ const Home = () => {
     </div>
   );
   const handleLogout = () => {
-    localStorage.removeItem('userToken');
+    localStorage.removeItem("userToken");
     sessionStorage.clear();
-    navigate('/'); // Redirects to Login
+    navigate("/"); // Redirects to Login
   };
   return (
     <div className="container">
       <div className="sun"></div>
       <div className="content w-92 ">
         <div className="flex justify-end items-end">
-          <button className="w-7 h-7 bg-red-500 rounded-md text-white p-2 flex justify-center items-center hover:scale-105 shadow-md transition-all duration-300" onClick={handleLogout}>
+          <button
+            className="w-7 h-7 bg-red-500 rounded-md text-white p-2 flex justify-center items-center hover:scale-105 shadow-md transition-all duration-300"
+            onClick={handleLogout}
+          >
             <LogOut className="w-5 h-5" />
           </button>
         </div>

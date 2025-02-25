@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import useStateUser from "../user/user-state";
 import { getUserData } from "../api/student";
-import { LogOut } from "lucide-react";
+import { LogOut, LoaderCircle } from "lucide-react";
 
 const Teacher = () => {
   const [userInfo, setUserInfo] = useState(null);
@@ -56,16 +56,22 @@ const Teacher = () => {
   }, [token, navigate]);
 
   if (isLoading) {
-    return <div className="loading">กำลังโหลด...</div>;
+    return (
+      <div className="bg-white w-24 h-24 rounded-3xl shadow-lg">
+        <div className="animate-spin flex justify-center items-center h-full ">
+          <LoaderCircle className="w-12 h-12"/>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
     return <div className="error">{error}</div>;
   }
   const handleLogout = () => {
-    localStorage.removeItem('userToken');
+    localStorage.removeItem("userToken");
     sessionStorage.clear();
-    navigate('/'); // Redirects to Login
+    navigate("/"); // Redirects to Login
   };
   return (
     <div className="container">
