@@ -68,7 +68,7 @@ const Teacher = () => {
   return (
     <div className={style.container}>
       <div className={style.sun}></div>
-      {[...Array(4)].map((_, index) => (
+      {[...Array(3)].map((_, index) => (
         <div key={index} className={style.cloud}>
           <div className={style.cloud}></div>
           <div className={style.cloud}></div>
