@@ -10,10 +10,10 @@ const Teacher = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const navigate = useNavigate();
   const token = useStateUser((state) => state.token);
-  
+
   const CLOUDINARY_URL = "https://res.cloudinary.com/dwyxrfpal/image/upload/";
   const DEFAULT_PROFILE_IMAGE = "/assets/default-profile.png";
 
@@ -30,11 +30,13 @@ const Teacher = () => {
         throw new Error(message || "ไม่สามารถดึงข้อมูลผู้ใช้ได้");
       }
 
-      setUserInfo(user || {
-        fullname: "อาจารย์ สุภาพร ผุดผ่อง",
-        department: "แผนกเทคโนโลยีสารสนเทศ",
-        image: "teacher.jpg"
-      });
+      setUserInfo(
+        user || {
+          fullname: "อาจารย์ สุภาพร ผุดผ่อง",
+          department: "แผนกเทคโนโลยีสารสนเทศ",
+          image: "teacher.jpg",
+        }
+      );
     } catch (error) {
       if (error.response?.status === 401) {
         setError("เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่");
@@ -66,8 +68,12 @@ const Teacher = () => {
   return (
     <div className={style.container}>
       <div className={style.sun}></div>
-      {[...Array(3)].map((_, index) => (
-        <div key={index} className={style.cloud}></div>
+      {[...Array(4)].map((_, index) => (
+        <div key={index} className={style.cloud}>
+          <div className={style.cloud}></div>
+          <div className={style.cloud}></div>
+          <div className={style.cloud}></div>
+        </div>
       ))}
 
       <div className={style.content}>
@@ -92,16 +98,16 @@ const Teacher = () => {
 
         <div className={style.buttonContainer}>
           <Link to="/teacher/scan-student">
-            <button 
-              className={style.button} 
+            <button
+              className={style.button}
               style={{ backgroundColor: "#66CCFF" }}
             >
               Scan
             </button>
           </Link>
           <Link to="/teacher/list-student">
-            <button 
-              className={style.button} 
+            <button
+              className={style.button}
               style={{ backgroundColor: "#FF66CC" }}
             >
               รายชื่อ
