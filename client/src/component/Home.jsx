@@ -17,7 +17,9 @@ const Home = () => {
 
   const cloudinaryUrl = "https://res.cloudinary.com/dwyxrfpal/image/upload/";
   const defaultProfileImage = "/assets/default-profile.png";
-
+  if (!token) {
+    navigate("/");
+  }
   const fetchUserData = async () => {
     try {
       const response = await getUserData(token);

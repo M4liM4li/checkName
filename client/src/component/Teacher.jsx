@@ -14,7 +14,9 @@ const Teacher = () => {
 
   const CLOUDINARY_URL = "https://res.cloudinary.com/dwyxrfpal/image/upload/";
   const DEFAULT_PROFILE_IMAGE = "/assets/default-profile.png";
-
+  if (!token) {
+    navigate("/");
+  }
   const fetchUserData = async () => {
     try {
       const response = await getUserData(token);
