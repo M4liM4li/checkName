@@ -44,7 +44,7 @@ const Teacher = () => {
 
   useEffect(() => {
     fetchUserData();
-    const interval = setInterval(fetchUserData, 3000);
+    const interval = setInterval(fetchUserData, 5000);
     return () => clearInterval(interval);
   }, []);
 
