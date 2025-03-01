@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import useStateUser from "../user/user-state";
 import { getUserData } from "../api/student";
-import { LogOut,LoaderCircle } from "lucide-react";
+import { LogOut, LoaderCircle } from "lucide-react";
 const Home = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [attendanceRecords, setAttendanceRecords] = useState([]);
@@ -70,7 +70,7 @@ const Home = () => {
     fetchUserData();
     const interval = setInterval(fetchUserData, 3000);
     return () => clearInterval(interval);
-  }, [navigate, token]);
+  }, []);
 
   if (isLoading) {
     return (
@@ -119,7 +119,7 @@ const Home = () => {
     </div>
   );
   const handleLogout = () => {
-    localStorage.removeItem("userToken");
+    localStorage.removeItem("user-state");
     sessionStorage.clear();
     navigate("/"); // Redirects to Login
   };

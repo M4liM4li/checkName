@@ -27,14 +27,6 @@ const Teacher = () => {
       if (!success) {
         throw new Error(message || "ไม่สามารถดึงข้อมูลผู้ใช้ได้");
       }
-
-      setUserInfo(
-        user || {
-          fullname: "อาจารย์ สุภาพร ผุดผ่อง",
-          department: "แผนกเทคโนโลยีสารสนเทศ",
-          image: "teacher.jpg",
-        }
-      );
     } catch (error) {
       if (error.response?.status === 401) {
         setError("เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่");
@@ -49,7 +41,7 @@ const Teacher = () => {
 
   useEffect(() => {
     fetchUserData();
-  }, [token, navigate]);
+  }, []);
 
   if (isLoading) {
     return (
@@ -65,7 +57,7 @@ const Teacher = () => {
     return <div className="error">{error}</div>;
   }
   const handleLogout = () => {
-    localStorage.removeItem("userToken");
+    localStorage.removeItem("user-state");
     sessionStorage.clear();
     navigate("/"); // Redirects to Login
   };
