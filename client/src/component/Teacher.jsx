@@ -17,25 +17,26 @@ const Teacher = () => {
 
   const fetchUserData = async () => {
     try {
-      if (!token) {
-        throw new Error("No authentication token found");
+      const response = await getUserData(token);
+      const data = response.data;
+
+      if (!data.success) {
+        throw new Error(data.message || "Failed to fetch user data");
       }
 
-      const response = await getUserData(token);
-      const { success, message, user } = response.data;
-
-      if (!success) {
-        throw new Error(message || "ไม่สามารถดึงข้อมูลผู้ใช้ได้");
+      if (data.user) {
+        setUserInfo(data.user);
       }
     } catch (error) {
       if (error.response?.status === 401) {
-        setError("เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่");
-        setTimeout(() => navigate("/"), 1500);
+        setError("Session expired. Please log in again.");
+        navigate("/");
       } else {
-        setError(error.message || "เกิดข้อผิดพลาดในการโหลดข้อมูล");
+        setError(error.message);
       }
     } finally {
       setIsLoading(false);
+      if (isFirstLoad.current) isFirstLoad.current = false;
     }
   };
 
@@ -47,7 +48,7 @@ const Teacher = () => {
     return (
       <div className="bg-white w-24 h-24 rounded-3xl shadow-lg">
         <div className="animate-spin flex justify-center items-center h-full ">
-          <LoaderCircle className="w-12 h-12"/>
+          <LoaderCircle className="w-12 h-12" />
         </div>
       </div>
     );
