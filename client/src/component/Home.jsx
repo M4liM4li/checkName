@@ -120,6 +120,7 @@ const Home = () => {
   );
   const handleLogout = () => {
     localStorage.removeItem("user-state");
+    localStorage.removeItem("token");
     sessionStorage.clear();
     navigate("/"); // Redirects to Login
   };
