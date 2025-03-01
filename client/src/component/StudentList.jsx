@@ -63,7 +63,18 @@ const StudentList = () => {
       setIsLoading(false);
     }
   };
- 
+
+  const deleteAllStudents = async () => {
+    const token = localStorage.getItem("token");
+    const response = await axios.delete(`${API_URL}/api/delete-names`, {
+      headers: { Authorization: token ? `Bearer ${token}` : undefined },
+    });
+    if (response.status === 200) {
+      setStudents([]);
+      return true;
+    }
+    throw new Error(response.data.message || "ไม่สามารถลบข้อมูลได้");
+  };
 
   const deleteName = async () => {
     Swal.fire({
