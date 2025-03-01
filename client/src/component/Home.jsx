@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import axios from "axios";
 import useStateUser from "../user/user-state";
 import { getUserData } from "../api/student";
 import { LogOut, LoaderCircle } from "lucide-react";
