@@ -30,7 +30,7 @@ const Teacher = () => {
     } catch (error) {
       if (error.response?.status === 401) {
         setError("เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่");
-        setTimeout(() => navigate("/login"), 1500);
+        setTimeout(() => navigate("/"), 1500);
       } else {
         setError(error.message || "เกิดข้อผิดพลาดในการโหลดข้อมูล");
       }

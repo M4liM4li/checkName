@@ -56,7 +56,7 @@ const Home = () => {
     } catch (error) {
       if (error.response?.status === 401) {
         setError("Session expired. Please log in again.");
-        navigate("/login");
+        navigate("/");
       } else {
         setError(error.message);
       }
